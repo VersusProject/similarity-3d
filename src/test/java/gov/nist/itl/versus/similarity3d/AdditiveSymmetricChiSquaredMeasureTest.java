@@ -17,40 +17,20 @@
  */
 package gov.nist.itl.versus.similarity3d;
 
-import org.junit.Assert;
-import org.junit.Test;
-import java.io.File;
-import java.io.IOException;
-import edu.illinois.ncsa.versus.UnsupportedTypeException;
-import edu.illinois.ncsa.versus.measure.Similarity;
 import edu.illinois.ncsa.versus.measure.SimilarityNumber;
-import edu.illinois.ncsa.versus.adapter.impl.ImageObjectAdapter;
-import edu.illinois.ncsa.versus.extract.impl.GrayscaleHistogramExtractor;
-import edu.illinois.ncsa.versus.descriptor.impl.GrayscaleHistogramDescriptor;
-import edu.illinois.ncsa.versus.extract.impl.RGBHistogramExtractor;
-import edu.illinois.ncsa.versus.descriptor.impl.RGBHistogramDescriptor;
-import edu.illinois.ncsa.versus.measure.SimilarityNumber;
-
-import gov.nist.itl.versus.similarity3d.comparisons.measure.impl.*;
 import gov.nist.itl.versus.similarity3d.comparisons.MathOpsE;
-
-
-import gov.nist.itl.versus.similarity3d.comparisons.exception.*;
-
-// new for 3D
-
-// dicom scenario
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.impl.DicomImageObjectAdapter;
-import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelHistogramDescriptor;
-import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelToArrayFeature;
-import gov.nist.itl.versus.similarity3d.comparisons.extract.impl.VoxelHistogramExtractor;
-import gov.nist.itl.versus.similarity3d.comparisons.extract.impl.VoxelToArrayFeatureExtractor;
-
-// mesho scenario
-import edu.ncsa.model.Mesh;
-import edu.ncsa.model.MeshAuxiliary.Point;
-import edu.ncsa.model.loaders.MeshLoader_OBJ;
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.impl.OBJImageObjectAdapter;
+import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelHistogramDescriptor;
+import gov.nist.itl.versus.similarity3d.comparisons.exception.ImageCompatibilityException;
+import gov.nist.itl.versus.similarity3d.comparisons.exception.SWIndependenceException;
+import gov.nist.itl.versus.similarity3d.comparisons.exception.SingularityTreatmentException;
+import gov.nist.itl.versus.similarity3d.comparisons.extract.impl.VoxelHistogramExtractor;
+import gov.nist.itl.versus.similarity3d.comparisons.measure.impl.*;
+
+import java.io.File;
+
+import org.junit.Test;
 
 /**
  * AdditiveSymmetricChiSquared Test
