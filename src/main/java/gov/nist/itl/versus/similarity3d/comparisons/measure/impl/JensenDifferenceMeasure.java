@@ -132,7 +132,7 @@ public class JensenDifferenceMeasure implements Measure, HasCategory, HasHelp
 		public Set<Class<? extends Descriptor>> supportedFeaturesTypes()
 		{
 			Set features = new HashSet();
-			features.add( VoxelToArrayFeature.class );
+			features.add( VoxelHistogramDescriptor.class );
 			return features;
 		}
 	

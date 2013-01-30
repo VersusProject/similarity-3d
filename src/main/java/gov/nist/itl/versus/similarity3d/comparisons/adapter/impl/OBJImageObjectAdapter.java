@@ -108,7 +108,8 @@ public class OBJImageObjectAdapter
 	}	
 	
 	public Double[] getHistogram(){ return histogram; }
-
+	public int getLength() { return histogram.length; }
+	
 	public int getWidth() { return w; }
 	public int getHeight(){ return h; }
 	public int getDepth() { return d; }

@@ -35,7 +35,7 @@ public class VoxelHistogramExtractor
 			Descriptor d = extract(hg);
 			return d;
 		}		
-		else if (adapter instanceof HasVoxels) {
+		else if (adapter instanceof HasMesh) {
 			HasMesh hm = (HasMesh) adapter;
 			Descriptor d = extract(hm);
 			return d;

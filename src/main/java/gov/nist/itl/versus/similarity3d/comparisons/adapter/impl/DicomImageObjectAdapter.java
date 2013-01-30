@@ -85,6 +85,8 @@ public class DicomImageObjectAdapter
 	}
 	
 	public Double[] getHistogram(){ return histogram; }
+	public int getLength() { return histogram.length; }
+	
 	public short[] getPixels() { return pixels; }
 	public ImagePlus image(){ return image; }
 	public ImageProcessor imageProcessor(){ return image.getProcessor(); }

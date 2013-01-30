@@ -70,7 +70,7 @@ public class DiceVoxelMeasure implements Measure, HasCategory, HasHelp
 			if (feature1.getWidth() != feature2.getWidth()) {
 				throw new ImageCompatibilityException("Features must have the same width");
 			}
-			// check for same number of bands
+			// check for same depth
 			if (feature1.getDepth() != feature2.getDepth()) {
 				throw new ImageCompatibilityException("Features must have the same depth");
 			}

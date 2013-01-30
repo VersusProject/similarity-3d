@@ -4,4 +4,5 @@ import edu.illinois.ncsa.versus.adapter.Adapter;
 
 public interface HasHistogram  extends Adapter {
 	public Double[] getHistogram();
+	public int getLength();
 }
