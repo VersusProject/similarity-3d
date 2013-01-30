@@ -44,7 +44,7 @@ import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelToArray
 import gov.nist.itl.versus.similarity3d.comparisons.exception.*;
 
 
-public class HellingerMeasure implements Measure, HasCategory, HasHelp
+public class HellingerMeasure implements Measure, HasCategory //, HasHelp
 {
 	private MathOpsE ops = new MathOpsE();
 
@@ -135,10 +135,6 @@ public class HellingerMeasure implements Measure, HasCategory, HasHelp
 			features.add( VoxelHistogramDescriptor.class );
 			return features;
 		}
-	
-		public String getFeatureType() {
-			return VoxelHistogramDescriptor.class.getName();
-		}
 
 		@Override
 		public String getName() {
@@ -155,7 +151,7 @@ public class HellingerMeasure implements Measure, HasCategory, HasHelp
 			return "3D Fidelity Family or Squared-chord Family";
 		}
 		
-
+	/*
 		@Override
 		public InputStream getHelpZipped() {
 			return HelpProvider.getHelpZipped(HellingerMeasure.class);
@@ -165,4 +161,5 @@ public class HellingerMeasure implements Measure, HasCategory, HasHelp
 		public String getHelpSHA1() {
 			return HelpProvider.getHelpSHA1(HellingerMeasure.class);
 		}
+	*/	
 }

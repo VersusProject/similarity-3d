@@ -44,7 +44,7 @@ import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelToArray
 import gov.nist.itl.versus.similarity3d.comparisons.exception.*;
 
 
-public class ProbabilisticSymmetricChiSquaredMeasure implements Measure, HasCategory, HasHelp
+public class ProbabilisticSymmetricChiSquaredMeasure implements Measure, HasCategory //, HasHelp
 {
 	private MathOpsE ops = new MathOpsE();
 
@@ -135,10 +135,6 @@ public class ProbabilisticSymmetricChiSquaredMeasure implements Measure, HasCate
 			features.add( VoxelHistogramDescriptor.class );
 			return features;
 		}
-	
-		public String getFeatureType() {
-			return VoxelHistogramDescriptor.class.getName();
-		}
 
 		@Override
 		public String getName() {
@@ -155,7 +151,7 @@ public class ProbabilisticSymmetricChiSquaredMeasure implements Measure, HasCate
 			return "3D Squared L2 Family or Chi-Squared Family";
 		}
 		
-
+	/*
 		@Override
 		public InputStream getHelpZipped() {
 			return HelpProvider.getHelpZipped(ProbabilisticSymmetricChiSquaredMeasure.class);
@@ -165,4 +161,5 @@ public class ProbabilisticSymmetricChiSquaredMeasure implements Measure, HasCate
 		public String getHelpSHA1() {
 			return HelpProvider.getHelpSHA1(ProbabilisticSymmetricChiSquaredMeasure.class);
 		}
+	*/	
 }

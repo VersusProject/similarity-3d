@@ -43,7 +43,7 @@ import gov.nist.itl.versus.similarity3d.comparisons.MathOpsE;
 import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelToArrayFeature;
 import gov.nist.itl.versus.similarity3d.comparisons.exception.*;
 
-public class JaccardVoxelMeasure implements Measure, HasCategory, HasHelp
+public class JaccardVoxelMeasure implements Measure, HasCategory //, HasHelp
 {
 	private MathOpsE ops = new MathOpsE();
 
@@ -139,10 +139,6 @@ public class JaccardVoxelMeasure implements Measure, HasCategory, HasHelp
 			features.add( VoxelToArrayFeature.class );
 			return features;
 		}
-	
-		public String getFeatureType() {
-			return VoxelToArrayFeature.class.getName();
-		}
 
 		@Override
 		public String getName() {
@@ -159,7 +155,7 @@ public class JaccardVoxelMeasure implements Measure, HasCategory, HasHelp
 			return "3D Voxel-Based Family";
 		}
 		
-
+	/*
 		@Override
 		public InputStream getHelpZipped() {
 			return HelpProvider.getHelpZipped(JaccardVoxelMeasure.class);
@@ -169,5 +165,5 @@ public class JaccardVoxelMeasure implements Measure, HasCategory, HasHelp
 		public String getHelpSHA1() {
 			return HelpProvider.getHelpSHA1(JaccardVoxelMeasure.class);
 		}
-
+	*/
 }

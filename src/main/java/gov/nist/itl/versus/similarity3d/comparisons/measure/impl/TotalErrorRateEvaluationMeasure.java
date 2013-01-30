@@ -43,7 +43,7 @@ import gov.nist.itl.versus.similarity3d.comparisons.MathOpsE;
 import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelToArrayFeature;
 import gov.nist.itl.versus.similarity3d.comparisons.exception.*;
 
-public class TotalErrorRateEvaluationMeasure implements Measure, HasCategory, HasHelp
+public class TotalErrorRateEvaluationMeasure implements Measure, HasCategory //, HasHelp
 {
 	private MathOpsE ops = new MathOpsE();
 
@@ -139,10 +139,6 @@ public class TotalErrorRateEvaluationMeasure implements Measure, HasCategory, Ha
 			features.add( VoxelToArrayFeature.class );
 			return features;
 		}
-	
-		public String getFeatureType() {
-			return VoxelToArrayFeature.class.getName();
-		}
 
 		@Override
 		public String getName() {
@@ -159,7 +155,7 @@ public class TotalErrorRateEvaluationMeasure implements Measure, HasCategory, Ha
 			return "3D Voxel-Based Family";
 		}
 		
-
+	/*
 		@Override
 		public InputStream getHelpZipped() {
 			return HelpProvider.getHelpZipped(TotalErrorRateEvaluationMeasure.class);
@@ -169,5 +165,5 @@ public class TotalErrorRateEvaluationMeasure implements Measure, HasCategory, Ha
 		public String getHelpSHA1() {
 			return HelpProvider.getHelpSHA1(TotalErrorRateEvaluationMeasure.class);
 		}
-
+	*/
 }
