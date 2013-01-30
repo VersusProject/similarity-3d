@@ -152,7 +152,7 @@ public class RuzickaMeasure implements Measure, HasCategory, HasHelp
 		
 		@Override
 		public String getCategory() {
-			return "Intersection Family";
+			return "3D Intersection Family";
 		}
 		
 

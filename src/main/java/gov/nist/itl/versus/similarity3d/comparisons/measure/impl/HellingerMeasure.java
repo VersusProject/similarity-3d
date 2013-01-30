@@ -152,7 +152,7 @@ public class HellingerMeasure implements Measure, HasCategory, HasHelp
 		
 		@Override
 		public String getCategory() {
-			return "Fidelity Family or Squared-chord Family";
+			return "3D Fidelity Family or Squared-chord Family";
 		}
 		
 

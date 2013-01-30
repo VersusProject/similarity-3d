@@ -152,7 +152,7 @@ public class CanberraMeasure implements Measure, HasCategory, HasHelp
 		
 		@Override
 		public String getCategory() {
-			return "L1 Family";
+			return "3D L1 Family";
 		}
 		
 

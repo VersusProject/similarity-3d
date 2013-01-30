@@ -152,7 +152,7 @@ public class KumarJohnsonDifferenceMeasure implements Measure, HasCategory, HasH
 		
 		@Override
 		public String getCategory() {
-			return "Combinations";
+			return "3D Combinations";
 		}
 		
 

@@ -27,6 +27,7 @@ import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasHistogram;
 
 import volume.VolumeFloat;
 import edu.illinois.ncsa.versus.adapter.Adapter;
+import edu.illinois.ncsa.versus.utility.HasCategory;
 import edu.ncsa.model.Mesh;
 import edu.ncsa.model.MeshAuxiliary.Color;
 import edu.ncsa.model.MeshAuxiliary.Point;
@@ -37,6 +38,7 @@ public class OBJImageObjectAdapter
 		Adapter
 		,HasVoxels
 		,HasHistogram
+		,HasCategory
 {	
 	
 	private MeshLoader_OBJ loader;
@@ -184,6 +186,7 @@ public class OBJImageObjectAdapter
 	public List<String> getSupportedMediaTypes() {
 		List<String> mediaTypes = new ArrayList<String>();
 		mediaTypes.add("image/*");
+		mediaTypes.add("text/plain");
 		return mediaTypes;
 	}		
 	
@@ -263,5 +266,10 @@ public class OBJImageObjectAdapter
 			if ( val > max ) max = val;
 		}
 		return max;
+	}
+	
+	@Override
+	public String getCategory() {
+		return "3D";
 	}
 }

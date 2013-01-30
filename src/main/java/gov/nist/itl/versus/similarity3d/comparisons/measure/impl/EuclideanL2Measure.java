@@ -152,7 +152,7 @@ public class EuclideanL2Measure implements Measure, HasCategory, HasHelp
 		
 		@Override
 		public String getCategory() {
-			return "Lp Minkowski Family";
+			return "3D Lp Minkowski Family";
 		}
 		
 

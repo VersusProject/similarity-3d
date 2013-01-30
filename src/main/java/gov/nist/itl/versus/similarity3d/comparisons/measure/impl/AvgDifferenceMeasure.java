@@ -152,7 +152,7 @@ public class AvgDifferenceMeasure implements Measure, HasCategory, HasHelp
 		
 		@Override
 		public String getCategory() {
-			return "Combinations";
+			return "3D Combinations";
 		}
 		
 

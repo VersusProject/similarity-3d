@@ -156,7 +156,7 @@ public class JaccardVoxelMeasure implements Measure, HasCategory, HasHelp
 		
 		@Override
 		public String getCategory() {
-			return "Voxel-Based Family";
+			return "3D Voxel-Based Family";
 		}
 		
 

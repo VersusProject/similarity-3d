@@ -152,7 +152,7 @@ public class JaccardMeasure implements Measure, HasCategory, HasHelp
 		
 		@Override
 		public String getCategory() {
-			return "Inner Product Family";
+			return "3D Inner Product Family";
 		}
 		
 

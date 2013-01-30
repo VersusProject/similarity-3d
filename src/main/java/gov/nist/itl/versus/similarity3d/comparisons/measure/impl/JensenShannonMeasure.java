@@ -152,7 +152,7 @@ public class JensenShannonMeasure implements Measure, HasCategory, HasHelp
 		
 		@Override
 		public String getCategory() {
-			return "Shannon's Entropy Family";
+			return "3D Shannon's Entropy Family";
 		}
 		
 

@@ -12,9 +12,12 @@ import java.util.Vector;
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.impl.DicomImageObjectAdapter;
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasHistogram;
 import edu.illinois.ncsa.versus.descriptor.Descriptor;
+import edu.illinois.ncsa.versus.utility.HasCategory;
 import edu.ncsa.model.Mesh;
 import edu.ncsa.model.MeshAuxiliary.Color;
 import edu.ncsa.model.MeshAuxiliary.Point;
+import  edu.illinois.ncsa.versus.adapter.HasMesh;
+
 
 /**
  * A feature presented to users as a 1-dimensional array of doubles
@@ -23,7 +26,10 @@ import edu.ncsa.model.MeshAuxiliary.Point;
  * @author Benjamin Long
  * 
  */
-public class VoxelHistogramDescriptor implements Descriptor 
+public class VoxelHistogramDescriptor 
+	implements 
+		Descriptor
+	  , HasCategory
 {
 	public final String type = this.getClass().toString();
 
@@ -45,8 +51,8 @@ public class VoxelHistogramDescriptor implements Descriptor
 	}	
 	
 
-	public VoxelHistogramDescriptor(Mesh mesh) {
-		this.values = voxelsToArray(mesh);
+	public VoxelHistogramDescriptor(HasMesh hm) {
+		this.values = voxelsToArray(hm.getMesh());
 	}
 	
 	public VoxelHistogramDescriptor(DicomImageObjectAdapter a) {
@@ -276,6 +282,11 @@ public class VoxelHistogramDescriptor implements Descriptor
             }
         }
         return pixels;
+	}	
+	
+	@Override
+	public String getCategory() {
+		return "3D";
 	}	
 		
 }

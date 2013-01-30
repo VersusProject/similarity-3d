@@ -10,6 +10,7 @@ import ij.process.ImageProcessor;
 import java.util.Vector;
 
 import edu.illinois.ncsa.versus.descriptor.Descriptor;
+import edu.illinois.ncsa.versus.utility.HasCategory;
 import edu.ncsa.model.Mesh;
 import edu.ncsa.model.MeshAuxiliary.Color;
 import edu.ncsa.model.MeshAuxiliary.Point;
@@ -21,7 +22,10 @@ import edu.ncsa.model.MeshAuxiliary.Point;
  * @author Benjamin Long
  * 
  */
-public class VoxelToArrayFeature implements Descriptor 
+public class VoxelToArrayFeature 
+	implements 
+		Descriptor
+	  , HasCategory
 {
 	public final String type = this.getClass().toString();
 
@@ -263,5 +267,10 @@ public class VoxelToArrayFeature implements Descriptor
         }
         return pixels;
 	}	
+	
+	@Override
+	public String getCategory() {
+		return "3D";
+	}
 		
 }

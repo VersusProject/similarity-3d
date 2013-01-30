@@ -19,6 +19,7 @@
 package gov.nist.itl.versus.similarity3d.comparisons.adapter.impl;
 
 import ij.IJ;
+
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.FolderOpener;
@@ -29,15 +30,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import volume.VolumeFloat;
+import edu.illinois.ncsa.versus.utility.HasCategory;
 import edu.illinois.ncsa.versus.adapter.Adapter;
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasVoxels;
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasHistogram;
+
 
 public class DicomImageObjectAdapter 
 	implements 
 		Adapter
 		,HasVoxels
 		,HasHistogram
+		,HasCategory
 {	
 	private ImagePlus image;
 	private short[] pixels;
@@ -167,7 +171,13 @@ public class DicomImageObjectAdapter
 	public List<String> getSupportedMediaTypes() {
 		List<String> mediaTypes = new ArrayList<String>();
 		mediaTypes.add("image/*");
+		mediaTypes.add("application/dicom");
 		return mediaTypes;
+	}
+
+	@Override
+	public String getCategory() {
+		return "3D";
 	}
 	
 }

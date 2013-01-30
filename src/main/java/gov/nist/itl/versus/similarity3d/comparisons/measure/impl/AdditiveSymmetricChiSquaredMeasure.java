@@ -152,7 +152,7 @@ public class AdditiveSymmetricChiSquaredMeasure implements Measure, HasCategory,
 		
 		@Override
 		public String getCategory() {
-			return "Squared L2 Family or Chi-Squared Family";
+			return "3D Squared L2 Family or Chi-Squared Family";
 		}
 		
 
