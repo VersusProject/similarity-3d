@@ -31,6 +31,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+
 import volume.VolumeFloat;
 import edu.illinois.ncsa.versus.VersusException;
 import edu.illinois.ncsa.versus.utility.HasCategory;
@@ -62,12 +64,24 @@ public class DicomImageObjectAdapter
 	}
 	
 	// load dicom file
-	public void load( File file ) 
-	{
-		IJ.open( file.getAbsolutePath() );
-		image = IJ.getImage();
-		init();
-	}
+    public void load(File file) throws IOException {
+        image = IJ.openImage(file.getAbsolutePath());
+        if (image == null) {
+            // Try to open as zip
+            File tempFile = File.createTempFile("versus_DICOM_", ".zip");
+            try {
+                FileUtils.copyFile(file, tempFile);
+                image = IJ.openImage(tempFile.getAbsolutePath());
+            } finally {
+                tempFile.delete();
+            }
+            if (image == null) {
+                throw new IOException("Cannot open file as DICOM.");
+            }
+        }
+        init();
+    }
+
 	
 	// load dicom dir (image-stack)
 	public void loadDir(File dir ) 
