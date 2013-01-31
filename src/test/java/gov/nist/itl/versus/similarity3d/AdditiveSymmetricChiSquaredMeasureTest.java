@@ -15,22 +15,42 @@
  * @version      1.0
  * date          
  */
-package gov.nist.itl.versus.similarity3d;
+package test.gov.nist.itl.versus.similarity3d.comparisons.measure.impl;
 
-import edu.illinois.ncsa.versus.measure.SimilarityNumber;
-import gov.nist.itl.versus.similarity3d.comparisons.MathOpsE;
-import gov.nist.itl.versus.similarity3d.comparisons.adapter.impl.DicomImageObjectAdapter;
-import gov.nist.itl.versus.similarity3d.comparisons.adapter.impl.OBJImageObjectAdapter;
-import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelHistogramDescriptor;
-import gov.nist.itl.versus.similarity3d.comparisons.exception.ImageCompatibilityException;
-import gov.nist.itl.versus.similarity3d.comparisons.exception.SWIndependenceException;
-import gov.nist.itl.versus.similarity3d.comparisons.exception.SingularityTreatmentException;
-import gov.nist.itl.versus.similarity3d.comparisons.extract.impl.VoxelHistogramExtractor;
-import gov.nist.itl.versus.similarity3d.comparisons.measure.impl.*;
-
-import java.io.File;
-
+import org.junit.Assert;
 import org.junit.Test;
+import java.io.File;
+import java.io.IOException;
+import edu.illinois.ncsa.versus.UnsupportedTypeException;
+import edu.illinois.ncsa.versus.measure.Similarity;
+import edu.illinois.ncsa.versus.measure.SimilarityNumber;
+import edu.illinois.ncsa.versus.adapter.impl.ImageObjectAdapter;
+import edu.illinois.ncsa.versus.extract.impl.GrayscaleHistogramExtractor;
+import edu.illinois.ncsa.versus.descriptor.impl.GrayscaleHistogramDescriptor;
+import edu.illinois.ncsa.versus.extract.impl.RGBHistogramExtractor;
+import edu.illinois.ncsa.versus.descriptor.impl.RGBHistogramDescriptor;
+import edu.illinois.ncsa.versus.measure.SimilarityNumber;
+
+import gov.nist.itl.versus.similarity3d.comparisons.measure.impl.*;
+import gov.nist.itl.versus.similarity3d.comparisons.MathOpsE;
+
+
+import gov.nist.itl.versus.similarity3d.comparisons.exception.*;
+
+// new for 3D
+
+// dicom scenario
+import gov.nist.itl.versus.similarity3d.comparisons.adapter.impl.DicomImageObjectAdapter;
+import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelHistogramDescriptor;
+import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelToArrayFeature;
+import gov.nist.itl.versus.similarity3d.comparisons.extract.impl.VoxelHistogramExtractor;
+import gov.nist.itl.versus.similarity3d.comparisons.extract.impl.VoxelToArrayFeatureExtractor;
+
+// mesho scenario
+import edu.ncsa.model.Mesh;
+import edu.ncsa.model.MeshAuxiliary.Point;
+import edu.ncsa.model.loaders.MeshLoader_OBJ;
+import gov.nist.itl.versus.similarity3d.comparisons.adapter.impl.OBJImageObjectAdapter;
 
 /**
  * AdditiveSymmetricChiSquared Test
@@ -57,6 +77,10 @@ public class AdditiveSymmetricChiSquaredMeasureTest extends junit.framework.Test
 	private static String qibaDir2="data/qiba/qiba2/";	
 	
 	private static String SEP = ",";
+	
+	private static String dicomZip1="data/qiba/qiba1.zip";
+	private static String dicomZip2="data/qiba/qiba2.zip";	
+	
 	
 	private static MathOpsE mopsE = new MathOpsE();
 
@@ -295,6 +319,15 @@ public class AdditiveSymmetricChiSquaredMeasureTest extends junit.framework.Test
 	@Test
 	public void test() {
 		try {
+
+			System.out.println("scenario-0_1.dicom.histogram-measure.zipfile-comparison");
+			//dicomDir(dicomZip1, dicomZip2);
+			//dicom(qibaFileName1, qibaFileName2);
+
+			dicom(fileName1, fileName2);
+			dicom(qibaFileName1, qibaFileName2);
+			
+			/*
 				System.out.println("scenario-1.dicom.histogram-measure.file-comparison");
 				dicom(fileName1, fileName2);
 				dicom(qibaFileName1, qibaFileName2);
@@ -302,7 +335,7 @@ public class AdditiveSymmetricChiSquaredMeasureTest extends junit.framework.Test
 				System.out.println("scenario-2.dicom.histogram-measure.dir-comparison");
 				dicomDir(fileDir1, fileDir2);
 				dicomDir(qibaDir1, qibaDir2);
-				
+			*/	
 				//System.out.println("scenario-3.obj/mesh.histogram-measure.file-comparison");
 				//mesh(fileName3, fileName4);
 		}

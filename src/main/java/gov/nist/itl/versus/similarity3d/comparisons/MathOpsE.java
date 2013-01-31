@@ -1793,10 +1793,7 @@ public class MathOpsE
 			chkargs("pixel_measure_ari",im1,im2);	
 	        Double ari     = 0.0d;
 	        Double ri     = 0.0d;
-   
-	        //Double[] im1 = img2ArrayColumnMajor(img1);	// NOTE: Column-major matrix traversal mimics Matlab traversal pattern.
-	        //Double[] im2 = img2ArrayColumnMajor(img2);
-       
+
 		     // We've assumed that images are identical in size at the application level.
 		     // Ergo,
 	        int imgSize = im1.length;
@@ -1806,17 +1803,9 @@ public class MathOpsE
 	        int im1LargestPV = im1PVS[ im1PVS.length - 1 ].intValue();	// get largest pixelValue from each pixelValueSpace
 	        int im2LargestPV = im2PVS[ im2PVS.length - 1 ].intValue();	
        
-	        Double[][] commonPixels = new Double[im1LargestPV+1][im2LargestPV+1];	// for counting total pixel overlaps in the two images
+	        double[][] commonPixels = new double[im1LargestPV+1][im2LargestPV+1];	// for counting total pixel overlaps in the two images
 	        	// NOTE: We add 1 to each pixelValue dimension b/c when a given pixelValue, like 255, is indexed, it goes to
 	        	//	     index-location 255, which works if we allocated 256 pixelLocations in which to index/count.
-      
-	        // init to zero counts
-	        // 2013-01-23 BJL - removed redundant loop
-	        /*
-	        for (int i=0; i < commonPixels.length; i++) 
-	        	for (int j=0; j < commonPixels[0].length; j++)
-	        		commonPixels[i][j] = 0.0d;
-	         */
 	        
 	        int im1Idx = 0;	// respective indices in commonPixel tracking matrix
 	        int im2Idx = 0;
@@ -1827,11 +1816,11 @@ public class MathOpsE
 	        	commonPixels[im1Idx][im2Idx]++;	// increment relative pixel values at (im1Px, im2Px) location
 	        }
        
-	        Double[] A = getRowCounts( commonPixels );	// get row counts
-	        Double[] B = getColCounts( commonPixels ); // get column counts
+	        double[] A = getRowCounts( commonPixels );	// get row counts
+	        double[] B = getColCounts( commonPixels ); // get column counts
         
 	        // linearize commonPixels space and get its sum
-	        Double[] linearized_commonPixels = vectorize(commonPixels);	        
+	        double[] linearized_commonPixels = vectorize(commonPixels);	        
 	        Double N = sum( linearized_commonPixels );	        
 	        // perform (N*(N-1)/2) over entire commonPixels space and other counts
 	        Double Nij = gaussSum( linearized_commonPixels );
@@ -1873,6 +1862,17 @@ public class MathOpsE
 		  return result;
 	  }	  
 	  
+	  public double gaussSum( double [] V ) throws Exception {
+		  chkargs("gaussSum",V);
+		  int len1 = V.length;
+		  double[] V2sub1 = sub(V, 1.0d);					// subtract 1 from vector elements
+		  double[] mulResult = dotProd(V, V2sub1);		// multiply them
+		  double sum = sum(mulResult);
+		  double result = div( sum, 2.0d);
+		  chkresult("gaussSum",result);
+		  return result;
+	  }		  
+	  
 	  public int gaussSum( Integer N ) throws Exception {
 		  chkargs("gaussSum",N);
 		  Integer result = (N*(N-1)) / 2;
@@ -1911,6 +1911,18 @@ public class MathOpsE
 		  chkresult("sub", V2);
 		  return V2;
 	  }	  
+	  
+	  public double[] sub( double[] V, double num ) throws Exception {
+		  chkargs("sub", V);
+		  chkargs("sub", num);
+		  int len = V.length;
+		  double[] V2 = new double[len];
+		  for (int i=0; i < len; i++) {
+			  V2[i] = V[i] - num;
+		  }
+		  chkresult("sub", V2);
+		  return V2;
+	  }	  	  
 	  
 	  public Integer[] dotProd( Integer[] V1, Integer[] V2 ) throws Exception {
 		  chkargs("dotProd", V1);
@@ -1953,6 +1965,27 @@ public class MathOpsE
 		  
 		  return result;
 	  }
+	  
+	  public double[] dotProd( double[] V1, double[] V2 ) throws Exception {
+		  chkargs("dotProd", V1);
+		  chkargs("dotProd", V2);
+		  int len1 = V1.length;
+		  int len2 = V2.length;
+		  double[] result = null;
+		  
+		  // NOTE: These should be the same length		  
+		  if ( len1 != len2 ) throw new Exception("vectors are not the same length");
+		  
+		  // if get here, assume they're the same length
+		  result = new double[len1];		  
+		  for (int i=0; i < len1; i++) {
+			  result[i] = V1[i] * V2[i];
+		  }		  
+		  
+		  chkresult("dotProd", result);
+		  
+		  return result;
+	  }	  
 	  
 	  
 	  public Integer div( Integer a, Integer b ) throws Exception {
@@ -2002,6 +2035,21 @@ public class MathOpsE
 		  return rowCounts;
 	  }
 	  
+	  public double[] getRowCounts( double[][] M ) throws Exception {
+		  
+		  chkargs("getRowCounts", M);
+		  
+		  int rows = M.length;
+		  double[] rowCounts = new double[rows];		  
+		  for (int i=0; i < rows; i++) {
+			  rowCounts[i] = sum( getRow(M,i) );
+		  }		  
+		  
+		  chkresult("getRowCounts", rowCounts);
+		  
+		  return rowCounts;
+	  }		  
+	  
 	  public Double[] getRowCounts( Double[][] M ) throws Exception {
 		  
 		  chkargs("getRowCounts", M);
@@ -2032,6 +2080,19 @@ public class MathOpsE
 		  return result;
 	  }
 	  
+	  public double[] getRow( double[][] M, int row ) throws Exception {
+		  
+		  chkargs("getRow", M);
+		  chkargs("getRow", row);
+		  double[] result = null;
+		  if ( row >=0 && row < M.length )
+			  result = M[row];
+
+		  chkresult("getRow", result);
+		  
+		  return result;
+	  }		  
+	  
 	  public Double[] getRow( Double[][] M, Integer row ) throws Exception {
 		  
 		  chkargs("getRow", M);
@@ -2055,6 +2116,21 @@ public class MathOpsE
 		  for (int i=0; i < cols; i++) {			  
 			  colCounts[i] = sum( getCol(M,i) );
 		  }		  
+		  
+		  chkresult("getColCounts", colCounts);
+		  
+		  return colCounts;
+	  }
+	  
+	  public double[] getColCounts( double[][] M ) throws Exception {
+		  
+		  chkargs("getColCounts", M);
+		  
+		  int cols = M[0].length;
+		  double[] colCounts = new double[cols];		  
+		  for (int i=0; i < cols; i++) {			  
+			  colCounts[i] = sum( getCol(M,i) );
+		  }
 		  
 		  chkresult("getColCounts", colCounts);
 		  
@@ -2098,6 +2174,28 @@ public class MathOpsE
 		  return result;
 
 	  }	  
+	  
+	  public double[] getCol( double[][] M, int col ) throws Exception {
+		  
+		  chkargs("getCol", M);
+		  chkargs("getCol", col);
+
+		  double[] result = null;
+		  
+		  if ( col >=0 && col < M[0].length ) {
+			  
+			  int rows = M.length;
+			  double[] column = new double[rows];
+			  for (int i=0; i < rows; i++) {
+				  column[i] = M[i][col];
+			  }			  
+			  result = column;
+		  }
+		 
+		  chkresult("getCol", result);
+		  
+		  return result;
+	  }		  
 
 	  public Double[] getCol( Double[][] M, Integer col ) throws Exception {
 		  
@@ -2183,14 +2281,10 @@ public class MathOpsE
 	  
 	  //assumes we're getting our data via voxels->1D-array
 	  public Double pixel_measure_ri_nD(Double[] im1, Double[] im2) throws Exception {
-		  
 			chkargs("pixel_measure_ri",im1,im2);	
-			
-	        //ImageData op = new ImageData();
-   
-	       // Double[] im1 = img2ArrayColumnMajor(img1);	// NOTE: Column-major matrix traversal mimics Matlab traversal pattern.
-	       // Double[] im2 = img2ArrayColumnMajor(img2);
-       
+	        Double ari     = 0.0d;
+	        Double ri     = 0.0d;
+
 		     // We've assumed that images are identical in size at the application level.
 		     // Ergo,
 	        int imgSize = im1.length;
@@ -2200,15 +2294,10 @@ public class MathOpsE
 	        int im1LargestPV = im1PVS[ im1PVS.length - 1 ].intValue();	// get largest pixelValue from each pixelValueSpace
 	        int im2LargestPV = im2PVS[ im2PVS.length - 1 ].intValue();	
        
-	        Double[][] commonPixels = new Double[im1LargestPV+1][im2LargestPV+1];	// for counting total pixel overlaps in the two images
+	        double[][] commonPixels = new double[im1LargestPV+1][im2LargestPV+1];	// for counting total pixel overlaps in the two images
 	        	// NOTE: We add 1 to each pixelValue dimension b/c when a given pixelValue, like 255, is indexed, it goes to
 	        	//	     index-location 255, which works if we allocated 256 pixelLocations in which to index/count.
-      
-	        // init to zero counts
-	        for (int i=0; i < commonPixels.length; i++) 
-	        	for (int j=0; j < commonPixels[0].length; j++)
-	        		commonPixels[i][j] = 0.0d;
-        
+	        
 	        int im1Idx = 0;	// respective indices in commonPixel tracking matrix
 	        int im2Idx = 0;
      
@@ -2218,25 +2307,24 @@ public class MathOpsE
 	        	commonPixels[im1Idx][im2Idx]++;	// increment relative pixel values at (im1Px, im2Px) location
 	        }
        
-	        Double[] A = getRowCounts( commonPixels );	// get row counts
-	        Double[] B = getColCounts( commonPixels ); // get column counts
+	        double[] A = getRowCounts( commonPixels );	// get row counts
+	        double[] B = getColCounts( commonPixels ); // get column counts
         
 	        // linearize commonPixels space and get its sum
-	        Double[] linearized_commonPixels = vectorize(commonPixels);	        
+	        double[] linearized_commonPixels = vectorize(commonPixels);	        
 	        Double N = sum( linearized_commonPixels );	        
-	        
 	        // perform (N*(N-1)/2) over entire commonPixels space and other counts
 	        Double Nij = gaussSum( linearized_commonPixels );
 	        Double A2  = gaussSum( A );
 	        Double B2  = gaussSum( B );
 		    Double N2  = gaussSum( N );		    
 		    Double ARI = ( Nij - ((A2*B2)/N2) ) / ( (0.5 * (A2+B2)) - ((A2*B2)/N2) );
-		    Double  RI = 1 + (((2*Nij) - A2 - B2) / N2) ;	
+		    Double  RI = 1 + (((2*Nij) - A2 - B2) / N2) ;	 
 		    
-		    chkresult("pixel_measure_ri",RI);
+		    chkresult("pixel_measure_ri",ARI);
 		    
-		  return RI;
-	  }		  
+		  return RI;	  
+	}		  
 	  
 		/*
 		 *  name:			Dice
@@ -2253,9 +2341,6 @@ public class MathOpsE
 	  public Double pixel_measure_dice_nD(Double[] im1, Double[] im2) throws Exception {	
 		  
 			chkargs("pixel_measure_dice",im1,im2);	
-			
-	       // Double[] im1 = img2ArrayColumnMajor(img1);	// NOTE: Column-major matrix traversal mimics Matlab traversal pattern.
-	       // Double[] im2 = img2ArrayColumnMajor(img2);
 
 	        im1 = pvrel_greaterThan(im1, 0.0d);			// transform all input images to binary via pixel-value-relation: pixelValue>0
 	        im2 = pvrel_greaterThan(im2, 0.0d);
@@ -2325,10 +2410,7 @@ public class MathOpsE
 	  
 	  public Double pixel_measure_jaccard_nD(Double[] im1, Double[] im2) throws Exception {
 		  
-			chkargs("pixel_measure_jaccard",im1,im2);	
-			
-	      //  Double[] im1 = img2ArrayColumnMajor(img1);	// NOTE: Column-major matrix traversal mimics Matlab traversal pattern.
-	      // Double[] im2 = img2ArrayColumnMajor(img2);	      
+			chkargs("pixel_measure_jaccard",im1,im2);	   
 	        
 	        im1 = pvrel_greaterThan(im1, 0.0d);	// transform all input images to binary via pixel-value-relation: pixelValue>0
 	        im2 = pvrel_greaterThan(im2, 0.0d);
@@ -2419,8 +2501,6 @@ public class MathOpsE
         Double in_TE   = 0.0d;
         Double tet     = 0.0d;
         Double tee     = 0.0d;
-        // Double[] im1 = img2Array(img1);
-        // Double[] im2 = img2Array(img2);
 
 		  Double[] T       = null;
 		  Double[] E       = null;
@@ -2492,8 +2572,6 @@ public class MathOpsE
         Double in_TE   = 0.0d;
         Double tet     = 0.0d;
         Double tee     = 0.0d;
-      //  Double[] im1 = img2Array(img1);
-      //  Double[] im2 = img2Array(img2);
 
 		  Double[] T       = null;
 		  Double[] E       = null;
@@ -2565,7 +2643,16 @@ public class MathOpsE
 		for (int i=0; i < len; i++) b = add(a[i], b);
       	chkresult("sum",b);
 		return b;
-	}	
+	}
+	
+	public Double sum(double[] a) throws Exception {
+      	chkargs("sum",a);
+		int len = a.length;
+		Double b = 0d;
+		for (int i=0; i < len; i++) b = add(a[i], b);
+      	chkresult("sum",b);
+		return b;
+	}		
 	
 	public Double sub(Double a, Double b) throws Exception {
       	chkargs("sub",a,b);
@@ -3057,6 +3144,16 @@ public class MathOpsE
 	  return true;	// if we get here, we've had no exceptions.
   }
   
+  public boolean chkargs( String methodName, double[] a ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  
+	  int len = a.length;
+	  for (int i=0; i < len; i++) {
+		  chkargs(methodName, a[i]);
+	  }	  
+	  return true;	// if we get here, we've had no exceptions.
+  }
+  
   public boolean chkargs( String methodName, Integer[] a ) throws Exception {
 	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
 	  
@@ -3076,6 +3173,16 @@ public class MathOpsE
 	  }	  
 	  return true;	// if we get here, we've had no exceptions.
   }
+  
+  public boolean chkargs( String methodName, double[][] a ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  
+	  int len = a.length;
+	  for (int i=0; i < len; i++) {
+		  chkargs(methodName, a[i]);
+	  }	  
+	  return true;	// if we get here, we've had no exceptions.
+  }  
   
   public boolean chkargs( String methodName, Integer[][] a ) throws Exception {
 	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
@@ -3158,9 +3265,17 @@ public class MathOpsE
    
   public boolean chkresult( String methodName, Double a ) throws Exception {
 	return chkargs(methodName,a);  
-  }  
+  }
+  
+  public boolean chkresult( String methodName, double a ) throws Exception {
+	return chkargs(methodName,a);  
+  }    
 	
   public boolean chkresult( String methodName, Double[] a ) throws Exception {
+	return chkargs(methodName,a);  
+  }
+  
+  public boolean chkresult( String methodName, double[] a ) throws Exception {
 	return chkargs(methodName,a);  
   }
   
@@ -3396,6 +3511,21 @@ public class MathOpsE
 		chkresult("vectorize",C);
 		return C;
 	}
+	
+	public double[] vectorize( double[][] A ) throws Exception {
+		chkargs("vectorize",A);
+		int len1 = A.length;
+		int len2 = A[0].length;
+		int len3 = len1*len2;
+		double[] C = new double[len1*len2];
+		for (int i=0; i < len1; i++) {
+		  for (int j=0; j < len2; j++) {
+			C[(i*len2)+j] = A[i][j];
+		  }
+		}
+		chkresult("vectorize",C);
+		return C;
+	}	
 	
 	public Double[] vectorize( Double[][][] A ) throws Exception {
 		chkargs("vectorize",A);

@@ -15,7 +15,7 @@
  * @version      1.0
  * date          
  */
-package gov.nist.itl.versus.similarity3d;
+package test.gov.nist.itl.versus.similarity3d.comparisons.measure.impl;
 
 import java.io.File;
 
