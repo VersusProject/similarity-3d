@@ -7,6 +7,7 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.process.ImageProcessor;
 
+import java.util.List;
 import java.util.Vector;
 
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.impl.DicomImageObjectAdapter;
@@ -17,6 +18,7 @@ import edu.ncsa.model.Mesh;
 import edu.ncsa.model.MeshAuxiliary.Color;
 import edu.ncsa.model.MeshAuxiliary.Point;
 import  edu.illinois.ncsa.versus.adapter.HasMesh;
+import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasHistogram;
 
 
 /**
@@ -30,6 +32,7 @@ public class VoxelHistogramDescriptor
 	implements 
 		Descriptor
 	  , HasCategory
+
 {
 	public final String type = this.getClass().toString();
 
@@ -60,7 +63,8 @@ public class VoxelHistogramDescriptor
 	}
 	
 	public Double[] getHistogram(){ return histogram; }	// returns "raw" (unnormalized) histogram
-
+	public int getLength(){ return histogram.length; }
+	
 	@Override
 	public String getType() {
 		return type;
@@ -70,7 +74,7 @@ public class VoxelHistogramDescriptor
 		return voxelsToArray();
 	}
 	
-	public int getLength(){ return getValues().length; }
+	
 	public double getValue(int i) {
 		if ( i >=0 && i < getLength() ) {
 			Double[] vals = getValues();
@@ -287,6 +291,6 @@ public class VoxelHistogramDescriptor
 	@Override
 	public String getCategory() {
 		return "3D";
-	}	
+	}
 		
 }

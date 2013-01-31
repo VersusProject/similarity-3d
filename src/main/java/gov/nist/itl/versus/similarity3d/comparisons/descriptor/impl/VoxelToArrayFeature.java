@@ -196,8 +196,8 @@ public class VoxelToArrayFeature
 		//double[][][] voxels = new double[len][len][len];
 		int pIdx 		= 0;		// pixel-index into pixels array.         
 		int x, y, z;
-		System.out.println("voxels = (d,w,h)=(" + d + "," + w + "," + h + ")" );
-		System.out.println("total-vertices=" + points.size() );
+	//	System.out.println("voxels = (d,w,h)=(" + d + "," + w + "," + h + ")" );
+	//	System.out.println("total-vertices=" + points.size() );
 		
 		for (int i=0; i < len; i++, pIdx++) 
 		{		
@@ -205,7 +205,7 @@ public class VoxelToArrayFeature
 				z = (int)points.get(i).z;
 				x = (int)points.get(i).x;
 				y = (int)points.get(i).y;
-				System.out.println("voxels = (z,x,y,voxel-value)=(" + z + "," + x + "," + y + "," + voxel + ")" );
+	//			System.out.println("voxels = (z,x,y,voxel-value)=(" + z + "," + x + "," + y + "," + voxel + ")" );
 				voxels[z][x][y] = voxel ;
 		}     
 		return voxels;

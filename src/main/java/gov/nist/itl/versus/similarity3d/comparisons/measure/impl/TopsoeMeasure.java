@@ -17,31 +17,22 @@
  */
 package gov.nist.itl.versus.similarity3d.comparisons.measure.impl;
 
-import edu.illinois.ncsa.versus.UnsupportedTypeException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import edu.illinois.ncsa.versus.descriptor.Descriptor;
-import edu.illinois.ncsa.versus.descriptor.impl.GrayscaleHistogramDescriptor;
-import edu.illinois.ncsa.versus.descriptor.impl.RGBHistogramDescriptor;
 import edu.illinois.ncsa.versus.measure.Measure;
 import edu.illinois.ncsa.versus.measure.Similarity;
 import edu.illinois.ncsa.versus.measure.SimilarityNumber;
 import edu.illinois.ncsa.versus.measure.SimilarityPercentage;
-
 import edu.illinois.ncsa.versus.utility.HasCategory;
-import edu.illinois.ncsa.versus.utility.HasHelp;
-import edu.illinois.ncsa.versus.utility.HelpProvider;
-
-import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Iterator;
-
-/**
- * New for 3D support
- */
 import gov.nist.itl.versus.similarity3d.comparisons.MathOpsE;
 import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelHistogramDescriptor;
-import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelToArrayFeature;
-import gov.nist.itl.versus.similarity3d.comparisons.exception.*;
+import gov.nist.itl.versus.similarity3d.comparisons.exception.ImageCompatibilityException;
+import gov.nist.itl.versus.similarity3d.comparisons.exception.MathCompatibilityException;
+import gov.nist.itl.versus.similarity3d.comparisons.exception.SWIndependenceException;
+import gov.nist.itl.versus.similarity3d.comparisons.exception.SingularityTreatmentException;
 
 
 public class TopsoeMeasure implements Measure, HasCategory //, HasHelp

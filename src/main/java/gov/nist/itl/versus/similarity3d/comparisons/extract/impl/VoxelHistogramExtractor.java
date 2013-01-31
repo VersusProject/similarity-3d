@@ -69,7 +69,7 @@ public class VoxelHistogramExtractor
 
 	@Override
 	public String getName() {
-		return "Voxels Histogram";
+		return "Voxel Histogram";
 	}
 
 	@Override

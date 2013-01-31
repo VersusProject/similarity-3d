@@ -30,7 +30,7 @@ public class VoxelToArrayFeatureExtractor
 			Descriptor d = extract(vx);
 			return d;
 		}
-		else if (adapter instanceof HasVoxels) {
+		else if (adapter instanceof HasMesh) {
 			HasMesh hm = (HasMesh) adapter;
 			Descriptor d = extract(hm);
 			return d;
