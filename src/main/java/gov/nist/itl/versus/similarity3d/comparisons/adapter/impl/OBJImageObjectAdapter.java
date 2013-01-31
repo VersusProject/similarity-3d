@@ -18,6 +18,8 @@
 package gov.nist.itl.versus.similarity3d.comparisons.adapter.impl;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -26,7 +28,10 @@ import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasVoxels;
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasHistogram;
 
 import volume.VolumeFloat;
+import edu.illinois.ncsa.versus.VersusException;
 import edu.illinois.ncsa.versus.adapter.Adapter;
+import edu.illinois.ncsa.versus.adapter.FileLoader;
+import edu.illinois.ncsa.versus.adapter.StreamLoader;
 import edu.illinois.ncsa.versus.utility.HasCategory;
 import edu.ncsa.model.Mesh;
 import edu.ncsa.model.MeshAuxiliary.Color;
@@ -39,6 +44,8 @@ public class OBJImageObjectAdapter
 		,HasVoxels
 		,HasHistogram
 		,HasCategory
+		,FileLoader
+		//,StreamLoader
 {	
 	
 	private MeshLoader_OBJ loader;
@@ -273,4 +280,12 @@ public class OBJImageObjectAdapter
 	public String getCategory() {
 		return "3D";
 	}
+
+	/*
+	@Override
+	public void load(InputStream arg0) throws IOException, VersusException {
+		// TODO Auto-generated method stub
+		
+	}
+	*/
 }

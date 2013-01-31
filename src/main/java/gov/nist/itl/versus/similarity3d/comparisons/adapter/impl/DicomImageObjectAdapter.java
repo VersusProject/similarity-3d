@@ -26,12 +26,17 @@ import ij.plugin.FolderOpener;
 import ij.process.ImageProcessor;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import volume.VolumeFloat;
+import edu.illinois.ncsa.versus.VersusException;
 import edu.illinois.ncsa.versus.utility.HasCategory;
 import edu.illinois.ncsa.versus.adapter.Adapter;
+import edu.illinois.ncsa.versus.adapter.FileLoader;
+import edu.illinois.ncsa.versus.adapter.StreamLoader;
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasVoxels;
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasHistogram;
 
@@ -42,6 +47,8 @@ public class DicomImageObjectAdapter
 		,HasVoxels
 		,HasHistogram
 		,HasCategory
+		,FileLoader
+		//,StreamLoader
 {	
 	private ImagePlus image;
 	private short[] pixels;
@@ -181,5 +188,12 @@ public class DicomImageObjectAdapter
 	public String getCategory() {
 		return "3D";
 	}
-	
+
+	/*
+	@Override
+	public void load(InputStream arg0) throws IOException, VersusException {
+		// TODO Auto-generated method stub
+		
+	}
+	*/
 }
