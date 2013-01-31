@@ -18,11 +18,16 @@
 package gov.nist.itl.versus.similarity3d.comparisons.adapter.impl;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.commons.io.IOUtils;
 
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasVoxels;
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasHistogram;
@@ -45,7 +50,7 @@ public class OBJImageObjectAdapter
 		,HasHistogram
 		,HasCategory
 		,FileLoader
-		//,StreamLoader
+		,StreamLoader
 {	
 	
 	private MeshLoader_OBJ loader;
@@ -63,12 +68,28 @@ public class OBJImageObjectAdapter
 	// load obj file
 	public void load( File file ) 
 	{
-		//System.out.println("DEBUG: beg load");
 		mesh 	= loader.load( file.getAbsolutePath() );
 		if ( mesh == null ) System.out.println("mesh==null");
 		init();
-		//System.out.println("DEBUG: end load");
 	}	
+	
+    @Override
+    public void load(InputStream stream) throws IOException, VersusException {
+        File file = File.createTempFile("OBJImageObjectAdapterInput", ".tmp");
+        FileOutputStream fos = new FileOutputStream(file);
+        try {
+            IOUtils.copy(stream, fos);
+        } finally {
+            fos.close();
+            stream.close();
+        }
+        load(file);
+        try {
+            file.delete();
+        } catch (Exception e) {
+            Logger.getLogger(OBJImageObjectAdapter.class.getName()).log(Level.WARNING, "Cannot delete temp file " + file, e);
+        }
+    }
 		
 	public void init() 
 	{
@@ -281,11 +302,4 @@ public class OBJImageObjectAdapter
 		return "3D";
 	}
 
-	/*
-	@Override
-	public void load(InputStream arg0) throws IOException, VersusException {
-		// TODO Auto-generated method stub
-		
-	}
-	*/
 }

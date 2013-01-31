@@ -26,12 +26,16 @@ import ij.plugin.FolderOpener;
 import ij.process.ImageProcessor;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import volume.VolumeFloat;
 import edu.illinois.ncsa.versus.VersusException;
@@ -50,7 +54,7 @@ public class DicomImageObjectAdapter
 		,HasHistogram
 		,HasCategory
 		,FileLoader
-		//,StreamLoader
+		,StreamLoader
 {	
 	private ImagePlus image;
 	private short[] pixels;
@@ -82,6 +86,23 @@ public class DicomImageObjectAdapter
         init();
     }
 
+    @Override
+    public void load(InputStream stream) throws IOException, VersusException {
+        File file = File.createTempFile("DicomImageObjectAdapterInput", ".tmp");
+        FileOutputStream fos = new FileOutputStream(file);
+        try {
+            IOUtils.copy(stream, fos);
+        } finally {
+            fos.close();
+            stream.close();
+        }
+        load(file);
+        try {
+            file.delete();
+        } catch (Exception e) {
+            Logger.getLogger(DicomImageObjectAdapter.class.getName()).log(Level.WARNING, "Cannot delete temp file " + file, e);
+        }
+    }
 	
 	// load dicom dir (image-stack)
 	public void loadDir(File dir ) 
@@ -203,11 +224,4 @@ public class DicomImageObjectAdapter
 		return "3D";
 	}
 
-	/*
-	@Override
-	public void load(InputStream arg0) throws IOException, VersusException {
-		// TODO Auto-generated method stub
-		
-	}
-	*/
 }
