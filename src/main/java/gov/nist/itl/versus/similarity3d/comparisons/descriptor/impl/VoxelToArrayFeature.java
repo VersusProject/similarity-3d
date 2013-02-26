@@ -1,6 +1,21 @@
 /**
+ * This software was developed at the National Institute of Standards and
+ * Technology by employees of the Federal Government in the course of
+ * their official duties. Pursuant to title 17 Section 105 of the United
+ * States Code this software is not subject to copyright protection and is
+ * in the public domain. This software is an experimental system. NIST assumes
+ * no responsibility whatsoever for its use by other parties, and makes no
+ * guarantees, expressed or implied, about its quality, reliability, or
+ * any other characteristic. We would appreciate acknowledgment if the
+ * software is used.
  * 
+ *  @author  B. Long
+ *  @version 1.0
+ *    
+ * 	 A feature presented to users as a 1-dimensional array of doubles
+ * 	 extracted from a set of input voxels. 
  */
+
 package gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl;
 
 import ij.ImagePlus;
@@ -15,13 +30,6 @@ import edu.ncsa.model.Mesh;
 import edu.ncsa.model.MeshAuxiliary.Color;
 import edu.ncsa.model.MeshAuxiliary.Point;
 
-/**
- * A feature presented to users as a 1-dimensional array of doubles
- * extracted from a set of input voxels.
- *
- * @author Benjamin Long
- * 
- */
 public class VoxelToArrayFeature 
 	implements 
 		Descriptor

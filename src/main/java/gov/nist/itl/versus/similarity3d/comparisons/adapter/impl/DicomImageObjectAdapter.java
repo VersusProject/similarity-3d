@@ -1,5 +1,4 @@
-
-/*
+/**
  * This software was developed at the National Institute of Standards and
  * Technology by employees of the Federal Government in the course of
  * their official duties. Pursuant to title 17 Section 105 of the United
@@ -11,9 +10,9 @@
  * software is used.
  *
  *
- *  @author  Benjamin Long, blong@nist.gov
+ *  @author  B. Long
  *  @version 1.0
- *    Date: Thu Dec  13 10:31:41 EST 2012
+ *  
  */
 
 package gov.nist.itl.versus.similarity3d.comparisons.adapter.impl;
@@ -45,7 +44,6 @@ import edu.illinois.ncsa.versus.adapter.FileLoader;
 import edu.illinois.ncsa.versus.adapter.StreamLoader;
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasVoxels;
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasHistogram;
-
 
 public class DicomImageObjectAdapter 
 	implements 

@@ -1,4 +1,4 @@
-/*
+/**
  * This software was developed at the National Institute of Standards and
  * Technology by employees of the Federal Government in the course of
  * their official duties. Pursuant to title 17 Section 105 of the United
@@ -10,30 +10,32 @@
  * software is used.
  *
  * name          JaccardVoxel 
- * description   Adapted 2D metrics to 3D dicom and mesh scenarios.
- * @author       Benjamin Long
+ * description   Adapted 2D metrics to 3D scenarios.
+ * @author       B. Long
  * @version      1.0
- * date          
+ * 
  */
 package gov.nist.itl.versus.similarity3d.comparisons.measure.impl;
 
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import edu.illinois.ncsa.versus.descriptor.Descriptor;
 import edu.illinois.ncsa.versus.measure.Measure;
 import edu.illinois.ncsa.versus.measure.Similarity;
 import edu.illinois.ncsa.versus.measure.SimilarityNumber;
 import edu.illinois.ncsa.versus.measure.SimilarityPercentage;
 import edu.illinois.ncsa.versus.utility.HasCategory;
+import edu.illinois.ncsa.versus.utility.HasHelp;
+import edu.illinois.ncsa.versus.utility.HelpProvider;
 import gov.nist.itl.versus.similarity3d.comparisons.MathOpsE;
 import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelToArrayFeature;
 import gov.nist.itl.versus.similarity3d.comparisons.exception.ImageCompatibilityException;
 import gov.nist.itl.versus.similarity3d.comparisons.exception.SWIndependenceException;
 import gov.nist.itl.versus.similarity3d.comparisons.exception.SingularityTreatmentException;
 
-public class JaccardVoxelMeasure implements Measure, HasCategory //, HasHelp
+public class JaccardVoxelMeasure implements Measure, HasCategory, HasHelp
 {
 	private MathOpsE ops = new MathOpsE();
 
@@ -145,7 +147,6 @@ public class JaccardVoxelMeasure implements Measure, HasCategory //, HasHelp
 			return "3D Voxel-Based Family";
 		}
 		
-	/*
 		@Override
 		public InputStream getHelpZipped() {
 			return HelpProvider.getHelpZipped(JaccardVoxelMeasure.class);
@@ -155,5 +156,4 @@ public class JaccardVoxelMeasure implements Measure, HasCategory //, HasHelp
 		public String getHelpSHA1() {
 			return HelpProvider.getHelpSHA1(JaccardVoxelMeasure.class);
 		}
-	*/
 }

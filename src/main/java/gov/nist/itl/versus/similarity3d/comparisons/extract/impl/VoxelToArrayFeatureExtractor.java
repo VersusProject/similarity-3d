@@ -1,3 +1,19 @@
+/**
+ * This software was developed at the National Institute of Standards and
+ * Technology by employees of the Federal Government in the course of
+ * their official duties. Pursuant to title 17 Section 105 of the United
+ * States Code this software is not subject to copyright protection and is
+ * in the public domain. This software is an experimental system. NIST assumes
+ * no responsibility whatsoever for its use by other parties, and makes no
+ * guarantees, expressed or implied, about its quality, reliability, or
+ * any other characteristic. We would appreciate acknowledgment if the
+ * software is used.
+ * 
+ *  @author  B. Long
+ *  @version 1.0
+ *    
+ */
+
 package gov.nist.itl.versus.similarity3d.comparisons.extract.impl;
 
 import java.util.HashSet;
@@ -6,14 +22,11 @@ import java.util.Set;
 import edu.illinois.ncsa.versus.UnsupportedTypeException;
 import edu.illinois.ncsa.versus.adapter.Adapter;
 import edu.illinois.ncsa.versus.adapter.HasMesh;
-import edu.illinois.ncsa.versus.adapter.HasPixels;
 import edu.illinois.ncsa.versus.descriptor.Descriptor;
 import edu.illinois.ncsa.versus.extract.Extractor;
 import edu.illinois.ncsa.versus.utility.HasCategory;
-import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasHistogram;
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.HasVoxels;
 import gov.nist.itl.versus.similarity3d.comparisons.adapter.impl.DicomImageObjectAdapter;
-import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelHistogramDescriptor;
 import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelToArrayFeature;
 
 public class VoxelToArrayFeatureExtractor 

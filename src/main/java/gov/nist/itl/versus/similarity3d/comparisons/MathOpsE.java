@@ -1,6 +1,4 @@
-package gov.nist.itl.versus.similarity3d.comparisons;
-
-/*
+/**
  * This software was developed at the National Institute of Standards and
  * Technology by employees of the Federal Government in the course of
  * their official duties. Pursuant to title 17 Section 105 of the United
@@ -12,11 +10,9 @@ package gov.nist.itl.versus.similarity3d.comparisons;
  * software is used.
  *
  *
- *  @author  Benjamin Long, blong@nist.gov
+ *  @author  B. Long
  *  @version 1.3
- */
-
-/*
+ *  
  *  Measure calculation implementations
  *  
  *  @see 			<a href="http://www.wseas.us/e-library/conferences/2008/harvard/math/49-577-887.pdf">http://www.wseas.us/e-library/conferences/2008/harvard/math/49-577-887.pdf</a>
@@ -24,27 +20,27 @@ package gov.nist.itl.versus.similarity3d.comparisons;
  *	description:	Each assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
  *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
  *  
- *  @author 		Benjamin Long, blong@nist.gov
+ *  @author 		B. Long
  *  version:		1.0
  */	
 
+package gov.nist.itl.versus.similarity3d.comparisons;
+
 import edu.illinois.ncsa.versus.descriptor.impl.GrayscaleHistogramDescriptor;
 import edu.illinois.ncsa.versus.descriptor.impl.RGBHistogramDescriptor;
-import gov.nist.itl.versus.similarity3d.comparisons.exception.*;
+import edu.ncsa.model.Mesh;
+import edu.ncsa.model.MeshAuxiliary.Point;
+import gov.nist.itl.versus.similarity3d.comparisons.exception.HWIndependenceException;
+import gov.nist.itl.versus.similarity3d.comparisons.exception.SingularityTreatmentException;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.process.ImageProcessor;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.TreeSet;
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Vector;
-import edu.ncsa.model.Mesh;
-import edu.ncsa.model.MeshAuxiliary.Point;
-import edu.ncsa.model.loaders.MeshLoader_OBJ;
-import ij.IJ;
-import ij.ImagePlus;
-import ij.ImageStack;
-import ij.process.ImageProcessor;
 
 public class MathOpsE 
 {
@@ -63,7 +59,7 @@ public class MathOpsE
 		 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 		 *					
 		 *  
-		 *  @author 		Benjamin Long, blong@nist.gov
+		 *  @author 		B. Long
 		 *  version:		1.0
 		 */		 	
 		 
@@ -89,7 +85,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *					
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */		
 	
@@ -112,7 +108,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .				
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 *  
 	 */		
@@ -138,7 +134,7 @@ public class MathOpsE
  *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
  *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
  *  
- *  @author 		Benjamin Long, blong@nist.gov
+ *  @author 		B. Long
  *  version:		1.0
  */	
 	
@@ -161,7 +157,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */		
 	
@@ -190,7 +186,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */		
 	
@@ -244,7 +240,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .				
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */		
 	
@@ -273,7 +269,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -304,7 +300,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */		
 	
@@ -333,7 +329,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -361,7 +357,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -412,7 +408,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */		
 	
@@ -459,7 +455,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 *
 	 */	 	
@@ -516,7 +512,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *					 
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 *
 	 */		
@@ -570,7 +566,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 *
 	 */	 	
@@ -610,7 +606,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */		
 	
@@ -637,7 +633,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	 	
 	
@@ -705,7 +701,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -727,7 +723,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -756,7 +752,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *					
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */		
 
@@ -792,7 +788,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 *
 	 */		
@@ -838,7 +834,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 *
 	 */  	
@@ -928,7 +924,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -994,7 +990,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */
 	
@@ -1018,7 +1014,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -1043,7 +1039,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 *
 	 */	
@@ -1094,7 +1090,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 *
 	 */	
@@ -1135,7 +1131,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -1188,7 +1184,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */		
 	
@@ -1211,7 +1207,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */			
 	
@@ -1237,7 +1233,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -1263,7 +1259,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -1291,7 +1287,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -1320,7 +1316,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -1350,7 +1346,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */
 	
@@ -1380,7 +1376,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 *
 	 */
@@ -1413,7 +1409,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -1439,7 +1435,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -1466,7 +1462,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	 
@@ -1497,7 +1493,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -1545,7 +1541,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -1597,7 +1593,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
      *	 
 	 */
@@ -1656,7 +1652,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */
 	
@@ -1697,7 +1693,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */
 	
@@ -1736,7 +1732,7 @@ public class MathOpsE
 	 *	description:	Assumes 2 probability distribution functions (1D vector PDFs) as input and generates a single numerical output.
 	 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 	 *  
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
 	
@@ -1782,7 +1778,7 @@ public class MathOpsE
 		 *	description:	Takes 2 representations of image pixel data as input and generates a single numerical output.
 		 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 		 *  
-		 *  @author 		Benjamin Long, blong@nist.gov
+		 *  @author 		B. Long
 		 *  version:		1.0
 		 */	
 
@@ -2274,7 +2270,7 @@ public class MathOpsE
 		 *	description:	Takes 2 representations of image pixel data as input and generates a single numerical output.
 		 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 		 *  
-		 *  @author 		Benjamin Long, blong@nist.gov
+		 *  @author 		B. Long
 		 *  version:		1.0
 		 */	
 	  
@@ -2333,7 +2329,7 @@ public class MathOpsE
 		 *	description:	Takes 2 representations of image pixel data as input and generates a single numerical output.
 		 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 		 *  
-		 *  @author 		Benjamin Long, blong@nist.gov
+		 *  @author 		B. Long
 		 *  version:		1.0
 		 */	
 	  
@@ -2404,7 +2400,7 @@ public class MathOpsE
 		 *	description:	Takes 2 representations of image pixel data as input and generates a single numerical output.
 		 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 		 *  
-		 *  @author 		Benjamin Long, blong@nist.gov
+		 *  @author 		B. Long
 		 *  version:		1.0
 		 */	
 	  
@@ -2486,7 +2482,7 @@ public class MathOpsE
 		 *	description:	Takes 2 representations of image pixel data as input and generates a single numerical output.
 		 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 		 *  
-		 *  @author 		Benjamin Long, blong@nist.gov
+		 *  @author 		B. Long
 		 *  version:		1.0
 		 */		
 		 
@@ -2558,7 +2554,7 @@ public class MathOpsE
 		 *	description:	Takes 2 representations of image pixel data as input and generates a single numerical output.
 		 *					Is called by appropriate related class in gov.nist.itl.versus.similarity.comparisons.measure.impl.* .
 		 *  
-		 *  @author 		Benjamin Long, blong@nist.gov
+		 *  @author 		B. Long
 		 *  version:		1.0
 		 */	    
 		 			  
@@ -2905,7 +2901,7 @@ public class MathOpsE
   	/*
 	 *  Support method for metric implementations  
 	 *  description: 	creates an array of a specific size, all having the same value (used in calculations).
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */		      	   
   public Double[] mkConstArray(Integer len, Double value) throws Exception 
@@ -2926,7 +2922,7 @@ public class MathOpsE
 	/*
 	 *  Support method for metric implementations
 	 *  description: 	Converts the content of an RGB histogram to the form used by the metric algorithms.
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	
   
@@ -2953,7 +2949,7 @@ public class MathOpsE
 	/*
 	 *  Support method for metric implementations  
 	 *  description: 	Converts the content of a gray-scale histogram to the form used by the metric algorithms.
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */	 
 
@@ -3030,7 +3026,7 @@ public class MathOpsE
 	/*
 	 *  Support method for metric implementations  
 	 *  description: 	Normalizes a raw histogram to relative frequencies. (Where the histogram was received from an RGB or gray-scale histogram feature.)
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */		 
 
@@ -3058,7 +3054,7 @@ public class MathOpsE
 	/*
 	 *  Support method for metric implementations  
 	 *  description: 	Normalizes an RGB histogram to relative frequencies.
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */		      
 
@@ -3075,7 +3071,7 @@ public class MathOpsE
 	/*
 	 *  Support method for metric implementations  
 	 *  description: 	Normalizes a gray-scale histogram to relative frequencies.
-	 *  @author 		Benjamin Long, blong@nist.gov
+	 *  @author 		B. Long
 	 *  version:		1.0
 	 */		      	 
 

@@ -1,4 +1,4 @@
-/*
+/**
  * This software was developed at the National Institute of Standards and
  * Technology by employees of the Federal Government in the course of
  * their official duties. Pursuant to title 17 Section 105 of the United
@@ -11,22 +11,24 @@
  *
  * name          InnerProduct 
  * description   
- * @author       Benjamin Long
+ * @author       B. Long
  * @version      1.0
- * date          
+ * 
  */
 package gov.nist.itl.versus.similarity3d.comparisons.measure.impl;
 
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import edu.illinois.ncsa.versus.descriptor.Descriptor;
 import edu.illinois.ncsa.versus.measure.Measure;
 import edu.illinois.ncsa.versus.measure.Similarity;
 import edu.illinois.ncsa.versus.measure.SimilarityNumber;
 import edu.illinois.ncsa.versus.measure.SimilarityPercentage;
 import edu.illinois.ncsa.versus.utility.HasCategory;
+import edu.illinois.ncsa.versus.utility.HasHelp;
+import edu.illinois.ncsa.versus.utility.HelpProvider;
 import gov.nist.itl.versus.similarity3d.comparisons.MathOpsE;
 import gov.nist.itl.versus.similarity3d.comparisons.descriptor.impl.VoxelHistogramDescriptor;
 import gov.nist.itl.versus.similarity3d.comparisons.exception.ImageCompatibilityException;
@@ -35,7 +37,7 @@ import gov.nist.itl.versus.similarity3d.comparisons.exception.SWIndependenceExce
 import gov.nist.itl.versus.similarity3d.comparisons.exception.SingularityTreatmentException;
 
 
-public class InnerProductMeasure implements Measure, HasCategory //, HasHelp
+public class InnerProductMeasure implements Measure, HasCategory, HasHelp
 {
 	private MathOpsE ops = new MathOpsE();
 
@@ -142,7 +144,6 @@ public class InnerProductMeasure implements Measure, HasCategory //, HasHelp
 			return "3D Inner Product Family";
 		}
 		
-	/*
 		@Override
 		public InputStream getHelpZipped() {
 			return HelpProvider.getHelpZipped(InnerProductMeasure.class);
@@ -151,6 +152,5 @@ public class InnerProductMeasure implements Measure, HasCategory //, HasHelp
 		@Override
 		public String getHelpSHA1() {
 			return HelpProvider.getHelpSHA1(InnerProductMeasure.class);
-		}
-	*/	
+		}	
 }

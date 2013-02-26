@@ -31,7 +31,6 @@ gov.nist.itl.versus.similarity3d.comparisons.measure.impl.KDivergenceMeasure
 gov.nist.itl.versus.similarity3d.comparisons.measure.impl.KulczynskiMeasure
 gov.nist.itl.versus.similarity3d.comparisons.measure.impl.KulczynskiSMeasure
 gov.nist.itl.versus.similarity3d.comparisons.measure.impl.KullbackLeiblerMeasure
-gov.nist.itl.versus.similarity3d.comparisons.measure.impl.KumarHassebrookPCEMeasure
 gov.nist.itl.versus.similarity3d.comparisons.measure.impl.KumarJohnsonDifferenceMeasure
 gov.nist.itl.versus.similarity3d.comparisons.measure.impl.LorentzianMeasure
 gov.nist.itl.versus.similarity3d.comparisons.measure.impl.MatusitaDMeasure
