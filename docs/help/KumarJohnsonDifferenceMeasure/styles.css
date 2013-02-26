@@ -1,0 +1,315 @@
+@page { 
+	margin: 4cm; 
+	size: legal landscpe;
+
+	@bottom-left {
+		content: "Proximity measure on-line documentation";
+	}
+	@bottom-right {
+		content: "Page " counter(page);
+	}
+}
+
+@page :left {
+	margin-left: 6cm;
+}
+@page :right {
+	margin-right: 6cm;
+}
+@page :first {
+	margin-top: 8cm;
+}
+
+@media print 
+{
+	table {
+		font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+		font-size: 12px;
+		background: #fff;
+		margin: 45px;
+		border-top: 7px solid #9baff1;
+		border-bottom: 7px solid #9baff1;
+		border: 1px solid #69c;
+		border-color: #039;
+		border-width: 0 0 1px 1px;
+		border-style: solid;
+		border-right: 1px solid #9baff1;
+
+		width: 800px;
+	}
+
+	thead {
+
+	}
+
+	th {
+	}
+
+	tr {
+		background: #d0dafd;
+		color: #339;
+		
+	}
+
+	td {
+		color: #669;
+		padding: 9px 8px 0px 8px;
+		border-left: 1px solid #9baff1;
+		border-top: 1px solid #9baff1;
+		border-right: 1px solid #9baff1;
+		border-bottom: 1px solid #9baff1;
+
+	}
+
+	tbody {
+		color: #111;
+	}
+
+	tr td {
+		color: #009;
+		
+	}
+
+	tfoot {
+
+	}
+
+}
+
+
+body {
+	line-height: 1.6em;
+}
+
+table {
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size: 12px;
+	background: #fff;
+	margin: 45px;
+
+	border-collapse: collapse;
+	border-top: 7px solid #9baff1;
+	border-bottom: 7px solid #9baff1;
+	border: 1px solid #69c;
+	border-color: #039;
+	border-width: 0 0 1px 1px;
+	border-style: solid;
+	border-right: 1px solid #9baff1;
+}
+
+thead {
+
+}
+
+th {
+	font-size: 14px;
+	font-weight: normal;
+	padding: 10px 8px;
+	border-bottom: 2px solid #6678b1;
+	background: #e8edff;
+	text-align: left;
+	border-right: 1px solid #9baff1;
+	border-left: 1px solid #9baff1;
+	color: #039;
+}
+
+tr {
+	background: #d0dafd;
+	color: #339;
+	
+}
+
+td {
+	color: #669;
+	padding: 9px 8px 0px 8px;
+	border-left: 1px solid #9baff1;
+	border-bottom: 1px solid #9baff1;
+}
+
+
+tbody {
+	color: #111;
+}
+
+tr td {
+	color: #009;
+
+}
+
+tfoot {
+
+}
+
+
+.metric_name_hdr {
+	display:block;
+	font-size:14 pt;
+	font-weight:bold;
+	text-align: center;
+	vertical-align: text-top;	
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+.metric_formula_hdr {
+	display:block;
+	font-size:14 pt;
+	font-weight:bold;	
+	text-align: center;
+	vertical-align: text-top;	
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+.metric_description_hdr {
+	display:block;
+	font-size:14 pt;
+	font-weight:bold;	
+	text-align: center;
+	vertical-align: text-top;	
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+.metric_category_hdr {
+	display:block;
+	font-size:14 pt;
+	font-weight:bold;	
+	text-align: center;
+	vertical-align: text-top;	
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+.metric_reference_hdr {
+	display:block;
+	font-size:14 pt;
+	font-weight:bold;	
+	text-align: center;
+	vertical-align: text-top;	
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+.metric_adapter_hdr {
+	display:block;
+	font-size:14 pt;
+	font-weight:bold;	
+	text-align: center;
+	vertical-align: text-top;	
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+.metric_extractor_hdr {
+	display:block;
+	font-size:14 pt;
+	font-weight:bold;	
+	text-align: center;
+	vertical-align: text-top;	
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+.metric_descriptor_hdr {
+	display:block;
+	font-size:14 pt;
+	font-weight:bold;	
+	text-align: center;
+	vertical-align: text-top;	
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+.metric_measure_hdr {
+	display:block;
+	font-size:14 pt;
+	font-weight:bold;	
+	text-align: center;
+	vertical-align: text-top;	
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+
+.metric_name {
+	display:block;
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+.metric_formula {
+	display:block;
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+
+.metric_description {
+	display:block;
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+
+.metric_category {
+	display:block;
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+
+.metric_reference {
+	display:block;
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+
+.metric_adapter {
+	display:block;
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+
+.metric_extractor {
+	display:block;
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+
+.metric_descriptor{
+	display:block;
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+
+.metric_measure {
+	display:block;
+	dmargin-left: 20pt;
+	dleft: 20px;
+	dbackground-color:#990000;
+	dtext-color:#000000;
+}
+
+
