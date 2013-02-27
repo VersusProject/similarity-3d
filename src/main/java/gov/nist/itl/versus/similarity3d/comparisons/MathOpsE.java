@@ -797,7 +797,13 @@ public class MathOpsE
 	public Double histogram_measure_kumar_hassebrook_pce(Double[] P, Double[] Q) throws Exception
 	{
 		  chkargs("histogram_measure_kumar_hassebrook_pce",P,Q);
-	  
+		  
+			// NOTE: The implementation of this measure has been commented out and replaced with a constant NaN result
+			//       due to the fact that the source paper (http://www.wseas.us/e-library/conferences/2008/harvard/math/49-577-887.pdf)
+			//       from which this was derived copied and pasted the formula for Jaccard in the description for Kumar-Hassebrook-PCE.
+			//		 Thus, when a replacement formula is identified, the implementation will be updated accordingly.
+		  
+	  /*
 		  // bottom right-most term
 	      Double[] D1 = mult(P,Q);
 	      Double d2	= sum(D1);
@@ -820,7 +826,9 @@ public class MathOpsE
 	      Double d10 = sum(D9);
 	      
 	      // combine
-	      Double d11 = div(d10, d8);		           
+	      Double d11 = div(d10, d8);
+	  */		           
+		  Double d11 = Double.NaN;
 		  
 	  	  chkresult("histogram_measure_kumar_hassebrook_pce",d11);
           return d11;		
