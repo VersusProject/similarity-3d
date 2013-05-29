@@ -26,24 +26,20 @@
 
 package gov.nist.itl.versus.similarity3d.comparisons;
 
-import edu.illinois.ncsa.versus.descriptor.impl.GrayscaleHistogramDescriptor;
-import edu.illinois.ncsa.versus.descriptor.impl.RGBHistogramDescriptor;
-import edu.ncsa.model.Mesh;
-import edu.ncsa.model.MeshAuxiliary.Point;
-import gov.nist.itl.versus.similarity3d.comparisons.exception.HWIndependenceException;
-import gov.nist.itl.versus.similarity3d.comparisons.exception.SingularityTreatmentException;
-import ij.ImagePlus;
-import ij.ImageStack;
-import ij.process.ImageProcessor;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.TreeSet;
-import java.util.Vector;
+
+import edu.illinois.ncsa.versus.descriptor.impl.GrayscaleHistogramDescriptor;
+import edu.illinois.ncsa.versus.descriptor.impl.RGBHistogramDescriptor;
+import gov.nist.itl.versus.similarity3d.comparisons.exception.HWIndependenceException;
+import gov.nist.itl.versus.similarity3d.comparisons.exception.SingularityTreatmentException;
 
 public class MathOpsE 
 {
+	
+	public final static double EPSILON = 0.0000001;
 	
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
  * Histogram-based measures.
@@ -119,9 +115,9 @@ public class MathOpsE
 		  chkargs("histogram_measure_minkowski",P,Q);		
 	      Double[] D1 = sub(P,Q);
 	  	  Double[] D2 = abs(D1);
-	  	  Double[] D3 = square(D2);
+	  	  Double[] D3 = cube(D2);
 	  	  Double d4 = sum(D3);
-	  	  Double d5 = sqrt(d4);
+	  	  Double d5 = cbrt(d4);
 	  	  chkresult("histogram_measure_minkowski",d5);
 	  	  return d5;
 	}
@@ -376,6 +372,10 @@ public class MathOpsE
 	{
 		  chkargs("histogram_measure_intersection_dNonIS",P,Q);		
 	      Double d1 = histogram_measure_intersection_IS(P,Q);
+	   // Case of normalized histograms
+		  if (d1 > 1 && Math.abs(sum(P) - 1) < MathOpsE.EPSILON && Math.abs(sum(Q) - 1) < MathOpsE.EPSILON) {  
+			  return 0.0;
+		  }
 		  Double d2 = sub(1.0d,d1);      
 	  	  chkresult("histogram_measure_intersection_dNonIS",d2);
 	  	  return d2;		
@@ -480,10 +480,15 @@ public class MathOpsE
 	// eqn #17.1
 	public Double histogram_measure_czekanowski_dCze(Double[] P, Double[] Q) throws Exception
 	{
-		  chkargs("histogram_measure_czekanowski_dCze",P,Q);		
-		  Double d1 = sub(1.0d,histogram_measure_czekanowski(P,Q)); 	        
-	  	  chkresult("histogram_measure_czekanowski_dCze",d1);
-		  return d1;				
+		  chkargs("histogram_measure_czekanowski_dCze",P,Q);
+		   // Case of normalized histograms
+		  Double d1 = histogram_measure_czekanowski(P,Q); 
+			  if (d1 > 1 && Math.abs(sum(P) - 1) < MathOpsE.EPSILON && Math.abs(sum(Q) - 1) < MathOpsE.EPSILON) {  
+				  return 0.0;
+			  }
+		  Double d2 = sub(1.0d,d1); 	        
+	  	  chkresult("histogram_measure_czekanowski_dCze",d2);
+		  return d2;				
 	}	
 	
 	// eqn #17.2
@@ -537,9 +542,14 @@ public class MathOpsE
 	public Double histogram_measure_motyka_dMot(Double[] P, Double[] Q) throws Exception
 	{
 		  chkargs("histogram_measure_motyka_dMot",P,Q);
-		  Double d1 = sub(1.0d, histogram_measure_motyka(P,Q));        
-	  	  chkresult("histogram_measure_motyka_dMot",d1);
-		  return d1;
+		  Double d1 = histogram_measure_motyka(P,Q);
+		   // Case of normalized histograms
+		  if (d1 > 1 && Math.abs(sum(P) - 1) < MathOpsE.EPSILON && Math.abs(sum(Q) - 1) < MathOpsE.EPSILON) {  
+			  return 0.0;
+		  }
+		  Double d2 = sub(1.0d, d1);        
+	  	  chkresult("histogram_measure_motyka_dMot",d2);
+		  return d2;
 	}
 
 	// eqn #19.2
@@ -798,12 +808,12 @@ public class MathOpsE
 	{
 		  chkargs("histogram_measure_kumar_hassebrook_pce",P,Q);
 		  
-			// NOTE: The implementation of this measure has been commented out and replaced with a constant NaN result
-			//       due to the fact that the source paper (http://www.wseas.us/e-library/conferences/2008/harvard/math/49-577-887.pdf)
-			//       from which this was derived copied and pasted the formula for Jaccard in the description for Kumar-Hassebrook-PCE.
-			//		 Thus, when a replacement formula is identified, the implementation will be updated accordingly.
-		  
-	  /*
+	// NOTE: The implementation of this measure has been commented out and replaced with a constant NaN result
+	//       due to the fact that the source paper (http://www.wseas.us/e-library/conferences/2008/harvard/math/49-577-887.pdf)
+	//       from which this was derived copied and pasted the formula for Jaccard in the description for Kumar-Hassebrook-PCE.
+	//		 Thus, when a replacement formula is identified, the implementation will be updated accordingly.
+	  
+	/*
 		  // bottom right-most term
 	      Double[] D1 = mult(P,Q);
 	      Double d2	= sum(D1);
@@ -827,7 +837,7 @@ public class MathOpsE
 	      
 	      // combine
 	      Double d11 = div(d10, d8);
-	  */		           
+	    */
 		  Double d11 = Double.NaN;
 		  
 	  	  chkresult("histogram_measure_kumar_hassebrook_pce",d11);
@@ -883,10 +893,15 @@ public class MathOpsE
 	// eqn #39.1 (a.k.a., #29.1, was misnamed in paper)
 	public Double histogram_measure_jaccard_dJac1(Double[] P, Double[] Q) throws Exception
 	{
-		  chkargs("histogram_measure_jaccard_dJac1",P,Q);		  
-		  Double d1 = sub(1.0d, histogram_measure_jaccard(P,Q));
-	  	  chkresult("histogram_measure_jaccard_dJac1",d1);
-	      return d1;		
+		  chkargs("histogram_measure_jaccard_dJac1",P,Q);
+		  Double d1 = histogram_measure_jaccard(P,Q);
+		  // Case of normalized histograms
+		  if (d1 > 1 && Math.abs(sum(P) - 1) < MathOpsE.EPSILON && Math.abs(sum(Q) - 1) < MathOpsE.EPSILON) {  
+			  return 0.0;
+		  }
+		  Double d2 = sub(1.0d,d1);
+	  	  chkresult("histogram_measure_jaccard_dJac1",d2);
+	      return d2;		
 	}	
 	
 	// eqn #39.2 (a.k.a., #29.2, was misnamed in paper)
@@ -962,9 +977,15 @@ public class MathOpsE
 	public Double histogram_measure_dice_dDice1(Double[] P, Double[] Q) throws Exception
 	{
 		  chkargs("histogram_measure_dice_dDice1",P,Q);
-		  Double d1 = sub(1.0d, histogram_measure_dice(P,Q));       
-	  	  chkresult("histogram_measure_dice_dDice1",d1);
-	      return d1;		
+		  Double d1 = histogram_measure_dice(P,Q);
+		  // Case of normalized histograms
+		  if (d1 > 1 && Math.abs(sum(P) - 1) < MathOpsE.EPSILON && Math.abs(sum(Q) - 1) < MathOpsE.EPSILON) {  
+			  return 0.0;
+		 }
+		
+		  Double d2 = sub(1.0d, d1);       
+	  	  chkresult("histogram_measure_dice_dDice1",d2);
+	      return d2;		
 	}	
 
 	// eqn #31.2 
@@ -1033,6 +1054,10 @@ public class MathOpsE
 	      Double[] D1 = mult(P,Q);
 		  Double[] D2 = sqrt(D1);
 		  Double d3 = sum(D2);
+		  // Case of normalized histograms
+		  if (d3 > 1 && Math.abs(sum(P) - 1) < MathOpsE.EPSILON && Math.abs(sum(Q) - 1) < MathOpsE.EPSILON) {  
+			  return 0.0;
+		  }
 		  Double d4	= ln(d3);		  
 		  Double d5	= mult(-1.0d, d4);		               
 	  	  chkresult("histogram_measure_bhattacharyya",d5);
@@ -1060,6 +1085,10 @@ public class MathOpsE
 	      Double[] D1 = mult(P,Q);
 		  Double[] D2 = sqrt(D1);
 		  Double d3 = sum(D2);
+		  // Case of normalized histograms
+		  if (d3 > 1 && Math.abs(sum(P) - 1) < MathOpsE.EPSILON && Math.abs(sum(Q) - 1) < MathOpsE.EPSILON) {  
+			  return 0.0;
+		  }
 		  
 		  // inside sqrt
 		  Double d4 = sub(1d, d3);
@@ -1109,7 +1138,11 @@ public class MathOpsE
 		  chkargs("histogram_measure_matusita",P,Q);
 	      Double[] D1 = mult(P,Q);
 		  Double[] D2 = sqrt(D1);
-		  Double d3 = sum(D2);		  			  
+		  Double d3 = sum(D2);
+		  // Case of normalized histograms
+		  if (d3 > 1 && Math.abs(sum(P) - 1) < MathOpsE.EPSILON && Math.abs(sum(Q) - 1) < MathOpsE.EPSILON) {  
+			  return 0.0;
+		  }
 		  Double d4 = mult(2.0d, d3);		               
 		  Double d5 = sub(2.0d, d4);
 		  Double d6 = sqrt(d5);
@@ -1160,9 +1193,14 @@ public class MathOpsE
 	public Double histogram_measure_squared_chord_Ssqc1(Double[] P, Double[] Q) throws Exception
 	{
 		  chkargs("histogram_measure_squared_chord_Ssqc1",P,Q);
-	      Double d1 = sub(1.0d, histogram_measure_squared_chord(P,Q));	                              
-	  	  chkresult("histogram_measure_squared_chord_Ssqc1",d1);
-		  return d1;		
+		  Double d1 = histogram_measure_squared_chord(P,Q);
+		  // Case of normalized histograms
+		  if (d1 > 1 && Math.abs(sum(P) - 1) < MathOpsE.EPSILON && Math.abs(sum(Q) - 1) < MathOpsE.EPSILON) {  
+			  return 0.0;
+		  }
+	      Double d2 = sub(1.0d, d1);	                              
+	  	  chkresult("histogram_measure_squared_chord_Ssqc1",d2);
+		  return d2;		
 	}	
 	
 	// eqn #39.2
@@ -1428,8 +1466,7 @@ public class MathOpsE
 			  // right-most term
 		      Double[] D1 = div(P,Q);      		      
 			  // combine
-		      Double[] D2 = ln(D1);		            		        
-		      Double[] D3 = mult(P,D2);		      
+		      Double[] D3 = a_Ln_b(P,D1);		      
 			  Double d4 = sum(D3);			  			  
 		  	  chkresult("histogram_measure_kullback_leibler",d4);
 			  return d4;		
@@ -1454,9 +1491,8 @@ public class MathOpsE
 		  // right-most term
 	      Double[] D1 = div(P,Q);      		      
 		  // combine
-	      Double[] D2 = ln(D1);	      
 	      Double[] D3 = sub(P,Q);	            		        
-	      Double[] D4 = mult(D3,D2);
+	      Double[] D4 = a_Ln_b(D3,D1);
 		  Double d5 = sum(D4);
 	  	  chkresult("histogram_measure_jeffreys",d5);
 		  return d5;
@@ -1486,8 +1522,7 @@ public class MathOpsE
 		  // right-most term: combine
 	      Double[] D4 = div(D3,D1);	 
 		  // combine
-	      Double[] D5 = ln(D4);
-		  Double[] D6 = mult(P,D5);		  
+		  Double[] D6 = a_Ln_b(P,D4);		  
 		  Double d7 = sum(D6);		  			  
 	  	  chkresult("histogram_measure_k_divergence",d7);
 		  return d7;		
@@ -1517,9 +1552,8 @@ public class MathOpsE
 	      Double[] D3 = mult(D2,Q);      		            		        
 		  // combine
 	      Double[] D4 = div(D3,D1);      		      
-	      Double[] D5 = ln(D4);
 		  // finish right-most term
-		  Double[] D6 = mult(Q,D5);
+		  Double[] D6 = a_Ln_b(Q,D4);
 		  
 		  // left-most term
 		  // bottom
@@ -1529,9 +1563,8 @@ public class MathOpsE
 	      Double[] D9 = mult(D8,P);      		            		        
 		  // combine
 	      Double[] D10 = div(D9,D7);      		      
-	      Double[] D11 = ln(D10);
 		  // finish left-most term
-		  Double[] D12 = mult(P,D11);		  
+		  Double[] D12 = a_Ln_b(P,D10);		  
 		  
 		  // combine left and right terms
 		  Double[] D13 = add(D12, D6);   
@@ -1565,8 +1598,7 @@ public class MathOpsE
 	      Double[] D3 = mult(D2,Q);      		            		        
 		  // combine
 	      Double[] D4 = div(D3,D1);      		      
-	      Double[] D5 = ln(D4);
-		  Double[] D6 = mult(Q,D5);
+		  Double[] D6 = a_Ln_b(Q,D4);
 		  Double d7	= sum(D6);
 		  
 		  // left-most term: sum P * ln( 2P / P+Q )
@@ -1577,8 +1609,7 @@ public class MathOpsE
 	      Double[] D9 = mult(D8,P);      		   
 		  // combine
 	      Double[] D10 = div(D9,D7);      		      
-	      Double[] D11 = ln(D10);
-		  Double[] D12 = mult(P,D11);
+		  Double[] D12 = a_Ln_b(P,D10);
 		  Double d12 = sum(D12);		
 		  
 		  // add them
@@ -1614,26 +1645,17 @@ public class MathOpsE
 	      Double[] D1 = mkConstArray(Q.length,2.0d);      		      
 	      Double[] D2 = add(P,Q);      		      
 	      Double[] D3 = div(D2,D1);      		      
-	      Double[] D4 = ln(D3);
+	      Double[] D4 = a_Ln_b(D3, D3);
 	      
-	      // middle-term: (P+Q)/2
-	      Double[] D5 = mkConstArray(Q.length,2.0d);      		      
-	      Double[] D6 = add(P,Q);      		      
-	      Double[] D7 = div(D6,D5);      		      
-	
-	      // last 2 combined      
-		  Double[] D8 = mult(D7,D4);
 
 		  // left-most term
 		  Double[] D9 = mkConstArray(Q.length,2.0d);
 		  
-		  // Q+ln Q
-		  Double[] D10 = ln(Q);
-		  Double[] D11 = mult(Q, D10);
+		  // Q*ln Q
+		  Double[] D11 = a_Ln_b(Q, Q);// mult(Q, D10);
 		  
-		  // P+ln P
-		  Double[] D12 = ln(P);
-		  Double[] D13 = mult(P, D12);
+		  // P*ln P
+		  Double[] D13 = a_Ln_b(P,P); //mult(P, D12);
 		  
 		  // add them
 		  Double[] D14 = add(D13, D11);
@@ -1642,7 +1664,7 @@ public class MathOpsE
 		  Double[] D15 = div(D14, D9);
 		  
 		  // first term - last combined term
-		  Double[] D16 = sub(D15, D8);  
+		  Double[] D16 = sub(D15, D4);  
 
 		  // final term: summation of last
 		  Double d17 = sum(D16);		
@@ -1678,7 +1700,6 @@ public class MathOpsE
 	      Double[] D5 = add(P,Q);
 		  // combine
 	      Double[] D6 = div(D5,D4);
-	      Double[] D7 = ln(D6);
 	      
 		  // left-most term
 		  // top
@@ -1686,7 +1707,7 @@ public class MathOpsE
 	      Double[] D9 = mkConstArray(Q.length, 2.0d);
 		  // combine
 	      Double[] D10= div(D8,D9);
-	      Double[] D11= mult(D10,D7);
+	      Double[] D11= a_Ln_b(D10,D6);
 	      Double d12 = sum(D11);
 	      
 	  	  chkresult("histogram_measure_taneja_difference",d12);
@@ -1773,7 +1794,680 @@ public class MathOpsE
 	  	  chkresult("histogram_measure_avg_difference",d9);
       	  return d9;		
 	}
+			  
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	// PRIMITIVE OPERATIONS
+	//////////////////////////////////////////////////////////////////////////////////
+	
+	public Double add(Double a, Double b) throws Exception {
+      	chkargs("add",a,b);
+		Double c = a + b;
+      	chkresult("add",c);
+		return c;
+	}
+	
+	public Double[] add(Double[] a, Double[] b) throws Exception {
+      	chkargs("add",a,b);
+		int len = a.length;
+		Double[] c = new Double[len];
+		for (int i=0; i < len; i++) c[i] = add(a[i], b[i]);
+      	chkresult("add",c);
+		return c;
+	}
+	
+	public Double sum(Double[] a) throws Exception {
+//      	chkargs("sum",a);
+		int len = a.length;
+		Double b = 0d;
+		
+		for (int i=0; i < len; i++) {
+			if (a[i] >= Double.MAX_VALUE)			// DN/PNB updates to deal with data that could overflow computationn
+				return Double.MAX_VALUE;
+			b = add(a[i], b); 
+		}
+      	chkresult("sum",b);
+		return b;
+	}	
+	
+	public Double sub(Double a, Double b) throws Exception {
+      	chkargs("sub",a,b);
+		Double c = a - b;		
+      	chkresult("sub",c);
+		return c;
+	}
 
+	public Double[] sub(Double[] a, Double[] b) throws Exception {
+      	chkargs("sub",a,b);
+		int len = a.length;
+		Double[] c = new Double[len];
+		for (int i=0; i < len; i++) c[i] = sub(a[i], b[i]);
+      	chkresult("sub",c);
+		return c;
+	}	
+	
+	public Double mult(Double a, Double b) throws Exception {
+      	chkargs("mult",a,b);
+		Double c = a * b;
+      	chkresult("mult",c);
+		return c;
+	}
+	
+	public Double[] mult(Double[] a, Double[] b) throws Exception {
+      	chkargs("mult",a,b);
+		int len = a.length;
+		Double[] c = new Double[len];
+		for (int i=0; i < len; i++)	c[i] = mult(a[i], b[i]);
+      	chkresult("mult",c);
+		return c;
+	}
+	
+	public Double mult(Double[] a) throws Exception {
+      	chkargs("mult",a);
+		int len = a.length;
+		Double b = 1d;
+		for (int i=0; i < len; i++) b = mult(a[i], b);	
+
+      	chkresult("mult",b);
+		return b;
+	}			
+	
+	public Double div(Double a, Double b) throws Exception 
+	{
+      	chkargs("div",a,b);
+		Double c = 0.0d;
+		
+		// Per guidance from the survey paper, if we receive 0/0, return 0. If x/0, a small value.
+		if ( Math.abs(a) <= Double.MIN_VALUE && Math.abs(b) <= Double.MIN_VALUE)	 {  // 0/0
+			return 0d;	
+		}
+		else if ( Math.abs(a) > Double.MIN_VALUE  && Math.abs(b) <= Double.MIN_VALUE  ) { // x/0
+			return Double.MAX_VALUE; // dealing with divisions of/near zero => mathematically yield INFINITY. => DN/PNB updated for MAX instead.
+		}
+		
+		c =  a / b;		
+      	chkresult("div",c);
+		return c;
+	}
+	
+	public Double[] div(Double[] a, Double[] b) throws Exception {
+      	chkargs("div",a,b);
+		int len = a.length;
+		Double[] c = new Double[len];
+		for (int i=0; i < len; i++) c[i] = div(a[i], b[i]);
+      	chkresult("div",c);
+		return c;
+	}			
+	
+	public Double pow(Double a, Double b) throws Exception {
+      	chkargs("pow",a,b);
+		Double c = Math.pow(a, b);
+      	chkresult("pow",c);
+		return c;
+	}
+	
+	public Double[] pow(Double[] a, Double[] b) throws Exception {
+      	chkargs("pow",a,b);
+		int len = a.length;
+		Double[] c = new Double[len];
+		for (int i=0; i < len; i++) c[i] = pow(a[i], b[i]);
+      	chkresult("pow",c);
+		return c;
+	}									
+	
+	public Double max(Double a, Double b) throws Exception {
+      	chkargs("max",a,b);
+		Double c = (a > b) ? a : b;
+      	chkresult("max",c);
+		return c;
+	}
+	
+	public Double[] max(Double[] a, Double[] b) throws Exception {
+      	chkargs("max",a,b);
+		int len = a.length;
+		Double[] c = new Double[len];
+		for (int i=0; i < len; i++) c[i] = max(a[i], b[i]);
+      	chkresult("max",c);
+		return c;
+	}
+	
+	public Double max(Double[] a) throws Exception {
+      	chkargs("max",a);
+		int len = a.length;
+		if ( len==0 ) return 0d;
+		Double b = a[0];
+		for (int i=0; i < len; i++) b = max(a[i], b);
+      	chkresult("max",b);
+		return b;
+	}	
+		
+	public Double min(Double a, Double b) throws Exception {
+      	chkargs("min",a,b);
+		Double c = (a < b) ? a : b;
+      	chkresult("min",c);
+		return c;
+	}
+	
+	public Double[] min(Double[] a, Double[] b) throws Exception {
+      	chkargs("min",a,b);
+		int len = a.length;
+		Double[] c = new Double[len];
+		for (int i=0; i < len; i++) c[i] = min(a[i], b[i]);
+      	chkresult("min",c);
+		return c;
+	}
+	
+	public Double min(Double[] a) throws Exception {
+      	chkargs("min",a);
+		int len = a.length;
+		if ( len==0 ) return 0d;
+		Double b = a[0];
+		for (int i=0; i < len; i++) b = min(a[i], b);
+      	chkresult("min",b);
+		return b;
+	}							
+		
+	public Double ln(Double a) throws Exception 
+	{
+      	chkargs("ln",a);
+		Double b = 0.0d;
+
+			// NOTE: let case: log 0 be handled by exception-handler of chkresult
+			
+		b = Math.log(a); // compute log
+
+      	chkresult("ln",b);
+		return b;
+	}
+	
+	public Double[] ln(Double[] a) throws Exception {
+      	chkargs("ln",a);
+		int len = a.length;
+		Double[] b = new Double[len];
+		for (int i=0; i < len; i++) b[i] = ln(a[i]);
+      	chkresult("ln",b);
+		return b;
+	}							
+
+	// DN/PNB - introduce method for case: (a log b) => also checks-for/handles case: (0 log 0)	
+	public Double a_Ln_b(Double a1, Double a2) throws Exception 
+	{
+		if(Math.abs(a1) <= Double.MIN_VALUE && Math.abs(a2) <= Double.MIN_VALUE)
+			return 0.0;
+		if(Math.abs(a1) > Double.MIN_VALUE && Math.abs(a2) <= Double.MIN_VALUE)
+			return (-Double.MAX_VALUE);
+		
+		if (a1 >= Double.MAX_VALUE || a2 >= Double.MAX_VALUE)
+			return  Double.MAX_VALUE;
+		
+//      	chkargs("a_Ln_b",a2);
+		Double b = 0.0d;
+		b = a1 * ln(a2);
+		if (b == Double.POSITIVE_INFINITY){
+			//System.out.println("A1: " + a1 + " A2: " + a2);
+		}
+      	chkresult("a_Ln_b",b);
+		return b;
+	}
+	
+	public Double[] a_Ln_b(Double[] a1, Double[] a2 ) throws Exception {
+
+		int len = a1.length;
+		Double[] b = new Double[len];
+		for (int i=0; i < len; i++) b[i] = a_Ln_b(a1[i], a2[i]);
+      	chkresult("a_Ln_b",b);
+		return b;
+	}	
+	
+	
+	public Double abs(Double a) throws Exception {
+      	chkargs("abs",a);
+		Double b = Math.abs(a);
+      	chkresult("abs",b);
+		return b;
+	}
+	
+	public Double[] abs(Double[] a) throws Exception {
+      	chkargs("abs",a);
+		int len = a.length;
+		Double[] b = new Double[len];
+		for (int i=0; i < len; i++) b[i] = abs(a[i]);
+      	chkresult("abs",b);
+		return b;
+	}								
+
+	
+	// NOTE1: unused methods commented for now
+	// NOTE2: When/if DO need to use these, can use them for any root: sqrt, cubed-root (cbrt), etc.
+	
+		/*	public Double root(Double a, b) throws Exception {
+			chkargs("root",a);
+			chkargs("root",b);
+				Double c = pow(a, reciprocal1(b));
+			chkresult("root",c);
+				return c;
+			}
+			
+			public Double[] root(Double[] a, Double[] b) throws Exception {
+			chkargs("root",a);
+			chkargs("root",b);
+				int len = a.length;
+				Double[] c = new Double[len];
+				for (int i=0; i < len; i++) c[i] = root(a[i], b[i]);
+			chkresult("root",c);
+				return c;
+			}	
+		*/							
+			
+	public Double square(Double a) throws Exception {
+      	chkargs("square",a);
+		Double b = a * a;	
+      	chkresult("square",b);
+		return b;
+	}
+	
+	public Double[] square(Double[] a) throws Exception {
+      	chkargs("square",a);
+		int len = a.length;
+		Double[] b = new Double[len];
+		for (int i=0; i < len; i++) b[i] = square(a[i]);
+      	chkresult("square",b);
+		return b;
+	}									
+	
+	public Double sqrt(Double a) throws Exception {
+      	chkargs("sqrt",a);
+		Double b = Math.sqrt(a);
+      	chkresult("sqrt",b);
+		return b;
+	}
+	
+	public Double[] sqrt(Double[] a) throws Exception {
+      	chkargs("sqrt",a);
+		int len = a.length;
+		Double[] b = new Double[len];
+		for (int i=0; i < len; i++)	b[i] = sqrt(a[i]);
+      	chkresult("sqrt",b);
+		return b;
+	}
+	
+	public Double cube(Double a) throws Exception {
+      	chkargs("cube",a);
+		Double b = a * a * a;	
+      	chkresult("cube",b);
+		return b;
+	}
+	
+	public Double[] cube(Double[] a) throws Exception {
+      	chkargs("cube",a);
+		int len = a.length;
+		Double[] b = new Double[len];
+		for (int i=0; i < len; i++) b[i] = cube(a[i]);
+      	chkresult("cube",b);
+		return b;
+	}
+	
+	public Double cbrt(Double a) throws Exception {
+      	chkargs("cbrt",a);
+		Double b = Math.cbrt(a);
+      	chkresult("cbrt",b);
+		return b;
+	}
+	
+	public Double[] cbrt(Double[] a) throws Exception {
+      	chkargs("cbrt",a);
+		int len = a.length;
+		Double[] b = new Double[len];
+		for (int i=0; i < len; i++) b[i] = cbrt(a[i]);
+      	chkresult("cbrt",b);
+		return b;
+	}
+			
+	public Double reciprocal1(Double a) throws Exception {
+      	chkargs("reciprocal1",a);
+		Double b = div(1d, a);
+      	chkresult("reciprocal1",b);
+		return b;
+	}
+	
+	public Double[] reciprocal1(Double[] a) throws Exception {
+      	chkargs("reciprocal1",a);
+		int len = a.length;
+		Double[] b = new Double[len];
+		for (int i=0; i < len; i++) b[i] = reciprocal1(a[i]);
+      	chkresult("reciprocal1",b);
+		return b;
+	}
+	
+//////////////////////////////////////////////////////////////////////////////////
+// SUPPORT METHODS
+//////////////////////////////////////////////////////////////////////////////////
+	
+  	/*
+	 *  Support method for metric implementations  
+	 *  description: 	creates an array of a specific size, all having the same value (used in calculations).
+	 *  @author 		B. Long
+	 *  version:		1.0
+	 */		      	   
+  public Double[] mkConstArray(Integer len, Double value) throws Exception 
+  {
+	  
+	  chkargs("mkConstArray", len);
+	  chkargs("mkConstArray", value);
+	  
+	  Double[] a = new Double[len];
+	  for (int i=0; i < len; i++) a[i] = value;
+    
+      chkresult("mkConstArray", a);
+      
+    return a;
+  }
+  
+  
+	/*
+	 *  Support method for metric implementations
+	 *  description: 	Converts the content of an RGB histogram to the form used by the metric algorithms.
+	 *  @author 		B. Long
+	 *  version:		1.0
+	 */	
+  
+  public Double[] rgbHistogram2Double(final RGBHistogramDescriptor d) throws Exception { 
+	  
+      	  chkargs("rgbHistogram2Double",d);
+      	  
+	      int len   	= d.getNumBins();
+	      int bands  	= d.getNumBands();
+	      Double[] r 	= new Double[len*bands];
+	      int hist[][] 	= d.getHistogram();
+	      
+	      // convert
+	      for ( int i=0; i < len; i++ ) {
+	        for (int j=0; j < bands; j++){
+	        	r[ (i*bands) + j ] = ( new Double(hist[i][j]) );
+	        }      
+	      }	      
+	      
+      	  chkresult("rgbHistogram2Double",r);
+	      return r;
+  } 
+   
+	/*
+	 *  Support method for metric implementations  
+	 *  description: 	Converts the content of a gray-scale histogram to the form used by the metric algorithms.
+	 *  @author 		B. Long
+	 *  version:		1.0
+	 */	 
+
+  public Double[] grayScaleHistogram2Double(final GrayscaleHistogramDescriptor d) throws Exception { 
+	  
+      chkargs("grayscaleHistogram2Double",d);
+      
+      int len    = d.getNumBins();
+      int hist[] = d.getHistogram();
+      Double[] r 	= new Double[len];
+
+      for ( int i=0; i < len; i++ ) {
+    	  r[i] = ( new Double(hist[i]) );
+      }
+      
+      chkresult("grayscaleHistogram2Double",r);
+      
+      return r;
+  } 
+
+	/*
+	 *  Support method for metric implementations  
+	 *  description: 	Normalizes a raw histogram to relative frequencies. (Where the histogram was received from an RGB or gray-scale histogram feature.)
+	 *  @author 		B. Long
+	 *  version:		1.0
+	 */		 
+
+
+  public Double[] normalizeHistogram(final Double[] h) throws Exception { 
+	  
+	chkargs("normalizeHistogram",h);
+        double total = 0;
+        int len = h.length;
+        for (int i=0; i < len; i++) {
+        	if ( h[i] != 0 ) {
+        		total += h[i];
+        	}
+        }
+
+      Double[] r = new Double[len];
+      for (int i=0; i < len; i++) {
+          r[i] = new Double( div(h[i], total)  );
+      }
+      
+      chkresult("normalizeHistogram",r);
+      return r;
+ } 
+
+	/*
+	 *  Support method for metric implementations  
+	 *  description: 	Normalizes an RGB histogram to relative frequencies.
+	 *  @author 		B. Long
+	 *  version:		1.0
+	 */		      
+
+
+	  public Double[] normalizeRgbHistogram(final RGBHistogramDescriptor d) throws Exception { 
+		  
+	      chkargs("normalizeRgbHistogram",d);
+	      Double[] h = rgbHistogram2Double(d);
+	      h = normalizeHistogram(h);
+	      chkresult("normalizeRgbHistogram",h);
+	      return h;         
+	  }       
+
+	/*
+	 *  Support method for metric implementations  
+	 *  description: 	Normalizes a gray-scale histogram to relative frequencies.
+	 *  @author 		B. Long
+	 *  version:		1.0
+	 */		      	 
+
+	  public Double[] normalizeGrayscaleHistogram(final GrayscaleHistogramDescriptor d) throws Exception { 
+		  
+	    	chkargs("normalizeGrayscaleHistogram",d);
+	        Double[] h = grayScaleHistogram2Double(d);
+	        h = normalizeHistogram(h);
+	        chkresult("normalizeGrayscaleHistogram",h);
+	        return h;         
+	  } 
+
+	
+//////////////////////////////////////////////////////////////////////////////////
+// Error checks
+//////////////////////////////////////////////////////////////////////////////////
+	  
+  public boolean chkargs( String methodName, RGBHistogramDescriptor a ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  return true;	// if we get here, we've had no exceptions.
+  }	  
+
+  public boolean chkargs( String methodName, GrayscaleHistogramDescriptor a ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  return true;	// if we get here, we've had no exceptions.
+  }	    
+  
+  public boolean chkargs( String methodName, Double a, Double b ) throws Exception {
+	  if ( 	a.equals(Double.NaN) ) throw new HWIndependenceException(methodName + ": first argument NAN indeterminate value");
+	  if ( 	a.equals(Double.POSITIVE_INFINITY) ) throw new SingularityTreatmentException(methodName  + ": first argument POSITIVE_INFINITY value");
+	  if ( 	a.equals(Double.NEGATIVE_INFINITY) ) throw new SingularityTreatmentException(methodName  + ": first argument NEGATIVE_INFINITY value");
+	  if ( 	b.equals(Double.NaN) ) throw new HWIndependenceException(methodName + ": second argument NAN indeterminate value");
+	  if ( 	b.equals(Double.POSITIVE_INFINITY) ) throw new SingularityTreatmentException(methodName  + ": second argument POSITIVE_INFINITY value");
+	  if ( 	b.equals(Double.NEGATIVE_INFINITY) ) throw new SingularityTreatmentException(methodName  + ": second argument NEGATIVE_INFINITY value");
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  if ( 	b == null ) throw new SingularityTreatmentException(methodName  + ": second argument null value");
+	  return true;	// if we get here, we've had no exceptions.
+  }
+  
+  // NOTE: This check for an int arg assumes a non-negative integer
+  public boolean chkargs( String methodName, int a ) throws Exception {
+	  if ( 	a < 0 ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  return true;	// if we get here, we've had no exceptions.
+  }  
+  
+  public boolean chkargs( String methodName, Integer a ) throws Exception {
+	  if ( 	a < 0 ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  return true;	// if we get here, we've had no exceptions.
+  }  
+      
+  public boolean chkargs( String methodName, Double a ) throws Exception {
+	  if ( 	a.equals(Double.NaN) ) throw new HWIndependenceException(methodName  + ": first argument NAN indeterminate value");
+	  if ( 	a.equals(Double.POSITIVE_INFINITY) ) throw new SingularityTreatmentException(methodName  + ": first argument POSITIVE_INFINITY value");
+	  if ( 	a.equals(Double.NEGATIVE_INFINITY) ) throw new SingularityTreatmentException(methodName  + ": first argument NEGATIVE_INFINITY value");
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  return true;	// if we get here, we've had no exceptions.
+  }
+  
+  public boolean chkargs( String methodName, Double[] a ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  
+	  int len = a.length;
+	  for (int i=0; i < len; i++) {
+		  chkargs(methodName, a[i]);
+	  }	  
+	  return true;	// if we get here, we've had no exceptions.
+  }
+  
+  public boolean chkargs( String methodName, Integer[] a ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  
+	  int len = a.length;
+	  for (int i=0; i < len; i++) {
+		  chkargs(methodName, a[i]);
+	  }	  
+	  return true;	// if we get here, we've had no exceptions.
+  }
+  
+  public boolean chkargs( String methodName, Double[][] a ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  
+	  int len = a.length;
+	  for (int i=0; i < len; i++) {
+		  chkargs(methodName, a[i]);
+	  }	  
+	  return true;	// if we get here, we've had no exceptions.
+  }
+  
+  public boolean chkargs( String methodName, Integer[][] a ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  
+	  int len = a.length;
+	  for (int i=0; i < len; i++) {
+		  chkargs(methodName, a[i]);
+	  }	  
+	  return true;	// if we get here, we've had no exceptions.
+  }
+  
+  public boolean chkargs( String methodName, Double[][][] a ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  
+	  int len = a.length;
+	  for (int i=0; i < len; i++) {
+		  chkargs(methodName, a[i]);
+	  }	  
+	  return true;	// if we get here, we've had no exceptions.
+  } 
+  
+  public boolean chkargs( String methodName, Integer[][][] a ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  
+	  int len = a.length;
+	  for (int i=0; i < len; i++) {
+		  chkargs(methodName, a[i]);
+	  }	  
+	  return true;	// if we get here, we've had no exceptions.
+  }  
+    
+  public boolean chkargs( String methodName, Double[] a, Double[] b ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  if ( 	b == null ) throw new SingularityTreatmentException(methodName  + ": second argument null value");
+	  chkargs(methodName,a);
+	  chkargs(methodName,b);
+	  return true;	// if we get here, we've had no exceptions.
+  }
+
+  public boolean chkargs( String methodName, Integer[] a, Integer[] b ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  if ( 	b == null ) throw new SingularityTreatmentException(methodName  + ": second argument null value");
+	  chkargs(methodName,a);
+	  chkargs(methodName,b);
+	  return true;	// if we get here, we've had no exceptions.
+  }  
+  
+  public boolean chkargs( String methodName, Double[][] a, Double[][] b ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  if ( 	b == null ) throw new SingularityTreatmentException(methodName  + ": second argument null value");
+	  chkargs(methodName,a);
+	  chkargs(methodName,b);
+	  return true;	// if we get here, we've had no exceptions.
+  }
+  
+  public boolean chkargs( String methodName, Integer[][] a, Integer[][] b ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  if ( 	b == null ) throw new SingularityTreatmentException(methodName  + ": second argument null value");
+	  chkargs(methodName,a);
+	  chkargs(methodName,b);
+	  return true;	// if we get here, we've had no exceptions.
+  }  
+ 
+  public boolean chkargs( String methodName, Double[][][] a, Double[][][] b ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  if ( 	b == null ) throw new SingularityTreatmentException(methodName  + ": second argument null value");
+	  chkargs(methodName,a);
+	  chkargs(methodName,b);
+	  return true;	// if we get here, we've had no exceptions.
+  }  
+  
+  public boolean chkargs( String methodName, Integer[][][] a, Integer[][][] b ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  if ( 	b == null ) throw new SingularityTreatmentException(methodName  + ": second argument null value");
+	  chkargs(methodName,a);
+	  chkargs(methodName,b);
+	  return true;	// if we get here, we've had no exceptions.
+  }    
+       
+   
+  public boolean chkresult( String methodName, Double a ) throws Exception {
+	return chkargs(methodName,a);  
+  }  
+	
+  public boolean chkresult( String methodName, Double[] a ) throws Exception {
+	return chkargs(methodName,a);  
+  }
+  
+  public boolean chkresult( String methodName, Double[][] a ) throws Exception {
+	return chkargs(methodName,a);  
+  }  
+
+  public boolean chkresult( String methodName, Double[][][] a ) throws Exception {
+	return chkargs(methodName,a);  
+  }   
+  
+  public boolean chkresult( String methodName, Integer a ) throws Exception {
+	return chkargs(methodName,a);  
+  }  
+	
+  public boolean chkresult( String methodName, Integer[] a ) throws Exception {
+	return chkargs(methodName,a);  
+  }
+  
+  public boolean chkresult( String methodName, Integer[][] a ) throws Exception {
+	return chkargs(methodName,a);  
+  }  
+
+  public boolean chkresult( String methodName, Integer[][][] a ) throws Exception {
+	return chkargs(methodName,a);  
+  }   
+ 	
+	
+/////////////////////////////////////////////////////
+// - - - - - - - - - - - - - - - - - - - - - - - - -
+/////////////////////////////////////////////////////
+	
 	  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 	  // -----------------------------------------
 	  // Labeled/Geometric/Structural Metrics
@@ -1790,7 +2484,6 @@ public class MathOpsE
 		 *  version:		1.0
 		 */	
 
-	  
 	  // assumes we have converted from voxels to 1D arrays here.
 	  public Double pixel_measure_ari_nD(Double[] im1, Double[] im2) throws Exception {
 		  
@@ -1801,33 +2494,44 @@ public class MathOpsE
 		     // We've assumed that images are identical in size at the application level.
 		     // Ergo,
 	        int imgSize = im1.length;
-       
+     
 	        Double[] im1PVS = uniqueValues(im1);	// unique pixelValueSpace for each image, respectively
 	        Double[] im2PVS = uniqueValues(im2);
 	        int im1LargestPV = im1PVS[ im1PVS.length - 1 ].intValue();	// get largest pixelValue from each pixelValueSpace
 	        int im2LargestPV = im2PVS[ im2PVS.length - 1 ].intValue();	
-       
+	        
+	        im1PVS = null;
+	        im2PVS = null;
+     
 	        double[][] commonPixels = new double[im1LargestPV+1][im2LargestPV+1];	// for counting total pixel overlaps in the two images
 	        	// NOTE: We add 1 to each pixelValue dimension b/c when a given pixelValue, like 255, is indexed, it goes to
 	        	//	     index-location 255, which works if we allocated 256 pixelLocations in which to index/count.
 	        
 	        int im1Idx = 0;	// respective indices in commonPixel tracking matrix
 	        int im2Idx = 0;
-     
+   
 	        for (int i=0; i < imgSize; i++) {
 	        	im1Idx = im1[i].intValue();		// get pixel index values into the commonPixels pixelValueCoordinateSpace
 	        	im2Idx = im2[i].intValue();	        	
 	        	commonPixels[im1Idx][im2Idx]++;	// increment relative pixel values at (im1Px, im2Px) location
 	        }
-       
+	        im1 = null;
+	        im2 = null;
+     
 	        double[] A = getRowCounts( commonPixels );	// get row counts
 	        double[] B = getColCounts( commonPixels ); // get column counts
-        
+      
 	        // linearize commonPixels space and get its sum
-	        double[] linearized_commonPixels = vectorize(commonPixels);	        
+	        double[] linearized_commonPixels = vectorize(commonPixels);	 
+	        
+	        commonPixels = null;
+	        
 	        Double N = sum( linearized_commonPixels );	        
 	        // perform (N*(N-1)/2) over entire commonPixels space and other counts
 	        Double Nij = gaussSum( linearized_commonPixels );
+	        
+	        linearized_commonPixels = null;
+	        
 	        Double A2  = gaussSum( A );
 	        Double B2  = gaussSum( B );
 		    Double N2  = gaussSum( N );		    
@@ -1835,6 +2539,9 @@ public class MathOpsE
 		    Double  RI = 1 + (((2*Nij) - A2 - B2) / N2) ;	 
 		    
 		    chkresult("pixel_measure_ari",ARI);
+		   
+		    _ARI=ARI;
+		    _RI = RI;
 		    
 		  return ARI;
 	  }
@@ -1879,14 +2586,14 @@ public class MathOpsE
 	  
 	  public int gaussSum( Integer N ) throws Exception {
 		  chkargs("gaussSum",N);
-		  Integer result = (N*(N-1)) / 2;
+		  Integer result = (N*(N-1)) / 2; // BJL: BUGFIX - should be n(n+1)/2 for true gaussSum; however, only RI/ARI use this, and the correct computation for RI/ARI is n(n-1)/2. So, despite this misnomer, RI/ARI were being calculated correctly.
 		  chkresult("gaussSum", result);
 		  return result;
 	  }
 	  
 	  public Double gaussSum( Double N ) throws Exception {
 		  chkargs("gaussSum",N);
-		  Double result = (N*(N-1)) / 2;
+		  Double result = (N*(N-1)) / 2;  // BJL: BUGFIX - should be n(n+1)/2 for true gaussSum; however, only RI/ARI use this, and the correct computation for RI/ARI is n(n-1)/2. So, despite this misnomer, RI/ARI were being calculated correctly.
 		  chkresult("gaussSum", result);
 		  return result;		  
 	  }	  
@@ -2292,33 +2999,45 @@ public class MathOpsE
 		     // We've assumed that images are identical in size at the application level.
 		     // Ergo,
 	        int imgSize = im1.length;
-       
+     
 	        Double[] im1PVS = uniqueValues(im1);	// unique pixelValueSpace for each image, respectively
 	        Double[] im2PVS = uniqueValues(im2);
 	        int im1LargestPV = im1PVS[ im1PVS.length - 1 ].intValue();	// get largest pixelValue from each pixelValueSpace
 	        int im2LargestPV = im2PVS[ im2PVS.length - 1 ].intValue();	
-       
+     
+	        im1PVS = null;
+	        im2PVS = null;
+	        
 	        double[][] commonPixels = new double[im1LargestPV+1][im2LargestPV+1];	// for counting total pixel overlaps in the two images
 	        	// NOTE: We add 1 to each pixelValue dimension b/c when a given pixelValue, like 255, is indexed, it goes to
 	        	//	     index-location 255, which works if we allocated 256 pixelLocations in which to index/count.
 	        
 	        int im1Idx = 0;	// respective indices in commonPixel tracking matrix
 	        int im2Idx = 0;
-     
+   
 	        for (int i=0; i < imgSize; i++) {
 	        	im1Idx = im1[i].intValue();		// get pixel index values into the commonPixels pixelValueCoordinateSpace
 	        	im2Idx = im2[i].intValue();	        	
 	        	commonPixels[im1Idx][im2Idx]++;	// increment relative pixel values at (im1Px, im2Px) location
 	        }
-       
+     
+	        im1 = null;
+	        im2 = null;
+	        
 	        double[] A = getRowCounts( commonPixels );	// get row counts
 	        double[] B = getColCounts( commonPixels ); // get column counts
-        
+      
 	        // linearize commonPixels space and get its sum
-	        double[] linearized_commonPixels = vectorize(commonPixels);	        
+	        double[] linearized_commonPixels = vectorize(commonPixels);	 
+	        
+	        commonPixels = null;
+	        
 	        Double N = sum( linearized_commonPixels );	        
 	        // perform (N*(N-1)/2) over entire commonPixels space and other counts
 	        Double Nij = gaussSum( linearized_commonPixels );
+	        
+	        linearized_commonPixels = null;
+	        
 	        Double A2  = gaussSum( A );
 	        Double B2  = gaussSum( B );
 		    Double N2  = gaussSum( N );		    
@@ -2326,6 +3045,9 @@ public class MathOpsE
 		    Double  RI = 1 + (((2*Nij) - A2 - B2) / N2) ;	 
 		    
 		    chkresult("pixel_measure_ri",ARI);
+		    
+		    _ARI=ARI;
+		    _RI = RI;
 		    
 		  return RI;	  
 	}		  
@@ -2350,11 +3072,18 @@ public class MathOpsE
 	        im2 = pvrel_greaterThan(im2, 0.0d);
 
 	        Double[] I = add(im1,im2);					// add their values together, creating a composite image of their corresponding values
+	        
+	        im1 = null;
+	        im2 = null;
+	        
 	        Double[] overlap = pvrel_equalTo(I, 2.0d);	// transform combined image into binary via pixel-value-relation; pixelValue==2 (i.e., where images had pixelValue==1)\
 	        
 	        // compute common color area bet/w both images
 	        I = pvrel_greaterThan(I, 0.0d);	// transforms back to binary  
 	        Double sum_overlap = sum(overlap);
+	        
+	        overlap = null;
+	        
 	        Double sum_I 	   = sum(I); 
 	        
 	        // use this information to compute dice
@@ -2420,10 +3149,17 @@ public class MathOpsE
 	        im2 = pvrel_greaterThan(im2, 0.0d);
 
 	        Double[] I = add(im1,im2);		// add their values together, creating a composite image of their corresponding values
+	        
+	        im1 = null;
+	        im2 = null;
+	        
 	        Double[] overlap = pvrel_equalTo(I, 2.0d);	// transform combined image into binary via pixel-value-relation; pixelValue==2 (i.e., where images had pixelValue==1)\
 	        // compute common color area bet/w both images
 	        I = pvrel_greaterThan(I, 0.0d);	// transforms back to binary  
 	        Double sum_overlap = sum(overlap);
+	        
+	        overlap = null;
+	        
 	        Double sum_I 	   = sum(I); 
 	        
 	        // use this information to compute jaccard	        
@@ -2493,61 +3229,69 @@ public class MathOpsE
 		 *  @author 		B. Long
 		 *  version:		1.0
 		 */		
-		 
+		
+	public static Double _TEE = 0.0;
+	public static Double _TET = 0.0;
+	public static Double _ARI = 0.0;
+	public static Double _RI  = 0.0;
 	
 	public Double pixel_measure_tee_nD( Double[] im1, Double[] im2 ) throws Exception
 	{
-   	 chkargs("pixel_measure_tee",im1,im2);
+ 	 chkargs("pixel_measure_tee",im1,im2);
 
-        Double si     = 0.0d;
-        Double fp     = 0.0d;
-        Double fn     = 0.0d;
-        Double in_TE   = 0.0d;
-        Double tet     = 0.0d;
-        Double tee     = 0.0d;
+      Double si     = 0.0d;
+      Double fp     = 0.0d;
+      Double fn     = 0.0d;
+      Double in_TE   = 0.0d;
+      Double tet     = 0.0d;
+      Double tee     = 0.0d;
 
 		  Double[] T       = null;
 		  Double[] E       = null;
-          Double[] Tc      = null;
-          Double[] Ec      = null;
-          Double[] N_TE    = null;
-          Double[] N_TcE   = null;
-          Double[] N_TEc   = null;
-          Double[] U_TE    = null;
+        Double[] Tc      = null;
+        Double[] Ec      = null;
+        Double[] N_TE    = null;
+        Double[] N_TcE   = null;
+        Double[] N_TEc   = null;
+        Double[] U_TE    = null;
 
 
 
-       	T= logical(im1);
-       	E= logical(im2);
+     	T= logical(im1);
+     	E= logical(im2);
 
 			Tc    = not(T);	
 
 			Ec    = not(E);
-           
+         
 			N_TE    = and(T,E);
 			N_TcE   = and(Tc,E);
 			N_TEc   = and(T,Ec);
 			U_TE    = or(T,E);
 
-         Double c_T      = sum(T);
-         Double c_E      = sum(E);
-         Double cN_TE    = sum(N_TE);
-         Double cN_TcE  = sum(N_TcE);
-         Double cN_TEc  = sum(N_TEc);
-         Double cU_TE    = sum(U_TE);
-         
-         si     =  div(cN_TE,cU_TE);
-         fp     = div(cN_TcE,cU_TE);
-         fn     = div(cN_TEc,cU_TE);
-         in_TE   = cN_TE;
-         tet     = div(cN_TE,c_T);
+       Double c_T      = sum(T);
+       Double c_E      = sum(E);
+       Double cN_TE    = sum(N_TE);
+       Double cN_TcE  = sum(N_TcE);
+       Double cN_TEc  = sum(N_TEc);
+       Double cU_TE    = sum(U_TE);
+       
+       si     =  div(cN_TE,cU_TE);
+       fp     = div(cN_TcE,cU_TE);
+       fn     = div(cN_TEc,cU_TE);
+       in_TE   = cN_TE;
+       tet     = div(cN_TE,c_T);
 
-         if ( c_E.equals( 0.0d ) ) {
-           tee = 1.0d;
-         }
-         else {
-           tee = div(cN_TE,c_E);	
-         }
+       if ( c_E.equals( 0.0d ) ) {
+         tee = 1.0d;
+       }
+       else {
+         tee = div(cN_TE,c_E);	
+       }
+       
+       _TEE=tee;
+       _TET=tet;
+       
 	        Double r = new Double(tee);
 	        
 	        chkresult("pixel_measure_tee",r);
@@ -2568,26 +3312,26 @@ public class MathOpsE
 		 			  
 	public Double pixel_measure_tet_nD(  Double[] im1, Double[] im2 ) throws Exception
 	{
-   	 chkargs("pixel_measure_tet",im1,im2);
+ 	 chkargs("pixel_measure_tet",im1,im2);
 
-        Double si     = 0.0d;
-        Double fp     = 0.0d;
-        Double fn     = 0.0d;
-        Double in_TE   = 0.0d;
-        Double tet     = 0.0d;
-        Double tee     = 0.0d;
+      Double si     = 0.0d;
+      Double fp     = 0.0d;
+      Double fn     = 0.0d;
+      Double in_TE   = 0.0d;
+      Double tet     = 0.0d;
+      Double tee     = 0.0d;
 
 		  Double[] T       = null;
 		  Double[] E       = null;
-          Double[] Tc      = null;
-          Double[] Ec      = null;
-          Double[] N_TE    = null;
-          Double[] N_TcE   = null;
-          Double[] N_TEc   = null;
-          Double[] U_TE    = null;
+        Double[] Tc      = null;
+        Double[] Ec      = null;
+        Double[] N_TE    = null;
+        Double[] N_TcE   = null;
+        Double[] N_TEc   = null;
+        Double[] U_TE    = null;
 
-       	T= logical(im1);
-       	E= logical(im2);
+     	T= logical(im1);
+     	E= logical(im2);
 
 			Tc    = not(T);	
 			Ec    = not(E);
@@ -2596,23 +3340,27 @@ public class MathOpsE
 			N_TEc   = and(T,Ec);
 			U_TE    = or(T,E);
 
-         Double c_T      = sum(T);
-         Double c_E      = sum(E);
-         Double cN_TE    = sum(N_TE);
-         Double cN_TcE  = sum(N_TcE);
-         Double cN_TEc  = sum(N_TEc);
-         Double cU_TE    = sum(U_TE);
-         si     =  div(cN_TE,cU_TE);
-         fp     = div(cN_TcE,cU_TE);
-         fn     = div(cN_TEc,cU_TE);
-         in_TE   = cN_TE;
-         tet     = div(cN_TE,c_T);
-         if ( c_E.equals( 0.0d ) ) {
-           tee = 1.0d;
-         }
-         else {
-           tee = div(cN_TE,c_E);	
-         }
+       Double c_T      = sum(T);
+       Double c_E      = sum(E);
+       Double cN_TE    = sum(N_TE);
+       Double cN_TcE  = sum(N_TcE);
+       Double cN_TEc  = sum(N_TEc);
+       Double cU_TE    = sum(U_TE);
+       si     =  div(cN_TE,cU_TE);
+       fp     = div(cN_TcE,cU_TE);
+       fn     = div(cN_TEc,cU_TE);
+       in_TE   = cN_TE;
+       tet     = div(cN_TE,c_T);
+       if ( c_E.equals( 0.0d ) ) {
+         tee = 1.0d;
+       }
+       else {
+         tee = div(cN_TE,c_E);	
+       }
+       
+       _TEE=tee;
+       _TET=tet;
+       
 	        Double r = new Double(tet);
 	        
 	        chkresult("pixel_measure_tet",r);
@@ -2624,521 +3372,27 @@ public class MathOpsE
 	// PRIMITIVE OPERATIONS
 	//////////////////////////////////////////////////////////////////////////////////
 	
-	public Double add(Double a, Double b) throws Exception {
-      	chkargs("add",a,b);
-		Double c = a + b;
-      	chkresult("add",c);
-		return c;
-	}
-	
-	public Double[] add(Double[] a, Double[] b) throws Exception {
-      	chkargs("add",a,b);
-		int len = a.length;
-		Double[] c = new Double[len];
-		for (int i=0; i < len; i++) c[i] = add(a[i], b[i]);
-      	chkresult("add",c);
-		return c;
-	}
-	
-	public Double sum(Double[] a) throws Exception {
-      	chkargs("sum",a);
-		int len = a.length;
-		Double b = 0d;
-		for (int i=0; i < len; i++) b = add(a[i], b);
-      	chkresult("sum",b);
-		return b;
-	}
 	
 	public Double sum(double[] a) throws Exception {
-      	chkargs("sum",a);
+    	chkargs("sum",a);
 		int len = a.length;
 		Double b = 0d;
 		for (int i=0; i < len; i++) b = add(a[i], b);
-      	chkresult("sum",b);
+    	chkresult("sum",b);
 		return b;
 	}		
 	
-	public Double sub(Double a, Double b) throws Exception {
-      	chkargs("sub",a,b);
-		Double c = a - b;		
-      	chkresult("sub",c);
-		return c;
-	}
-
-	public Double[] sub(Double[] a, Double[] b) throws Exception {
-      	chkargs("sub",a,b);
-		int len = a.length;
-		Double[] c = new Double[len];
-		for (int i=0; i < len; i++) c[i] = sub(a[i], b[i]);
-      	chkresult("sub",c);
-		return c;
-	}	
-	
-	public Double mult(Double a, Double b) throws Exception {
-      	chkargs("mult",a,b);
-		Double c = a * b;
-      	chkresult("mult",c);
-		return c;
-	}
-	
-	public Double[] mult(Double[] a, Double[] b) throws Exception {
-      	chkargs("mult",a,b);
-		int len = a.length;
-		Double[] c = new Double[len];
-		for (int i=0; i < len; i++) c[i] = mult(a[i], b[i]);
-      	chkresult("mult",c);
-		return c;
-	}
-	
-	public Double mult(Double[] a) throws Exception {
-      	chkargs("mult",a);
-		int len = a.length;
-		Double b = 0d;
-		for (int i=0; i < len; i++) b = mult(a[i], b);
-      	chkresult("mult",b);
-		return b;
-	}			
-	
-	public Double div(Double a, Double b) throws Exception 
-	{
-      	chkargs("div",a,b);
-		Double c = 0.0d;
-		
-		// Per guidance from the survey paper, if we receive 0/0, return 0. If x/0, a small value.
-		
-		if ( a.equals(0d) && b.equals(0d) )	 {  // 0/0
-			c = 0d;	
-		}
-		else if ( !a.equals(0d) && b.equals(0d) ) { // x/0
-			// c = Double.MIN_VALUE;	
-			b = Double.MIN_VALUE; // NOTE: The author must have meant to replace a div/0 by a div/small-number b/c to replace divZ==Infinity with Small-number makes no sense.	
-				// NOTE: Alternatively, one could also replace c with a MAX_VALUE
-			
-		}
-
-		c =  a / b;		
-	
-      	chkresult("div",c);
-		return c;
-	}
-	
-	public Double[] div(Double[] a, Double[] b) throws Exception {
-      	chkargs("div",a,b);
-		int len = a.length;
-		Double[] c = new Double[len];
-		for (int i=0; i < len; i++) c[i] = div(a[i], b[i]);
-      	chkresult("div",c);
-		return c;
-	}			
-	
-	public Double pow(Double a, Double b) throws Exception {
-      	chkargs("pow",a,b);
-		Double c = Math.pow(a, b);
-      	chkresult("pow",c);
-		return c;
-	}
-	
-	public Double[] pow(Double[] a, Double[] b) throws Exception {
-      	chkargs("pow",a,b);
-		int len = a.length;
-		Double[] c = new Double[len];
-		for (int i=0; i < len; i++) c[i] = pow(a[i], b[i]);
-      	chkresult("pow",c);
-		return c;
-	}									
-	
-	public Double max(Double a, Double b) throws Exception {
-      	chkargs("max",a,b);
-		Double c = (a > b) ? a : b;
-      	chkresult("max",c);
-		return c;
-	}
-	
-	public Double[] max(Double[] a, Double[] b) throws Exception {
-      	chkargs("max",a,b);
-		int len = a.length;
-		Double[] c = new Double[len];
-		for (int i=0; i < len; i++) c[i] = max(a[i], b[i]);
-      	chkresult("max",c);
-		return c;
-	}
-	
-	public Double max(Double[] a) throws Exception {
-      	chkargs("max",a);
-		int len = a.length;
-		Double b = 0d;
-		for (int i=0; i < len-1; i++) b = max(a[i], a[i+1]);
-      	chkresult("max",b);
-		return b;
-	}								
-		
-	public Double min(Double a, Double b) throws Exception {
-      	chkargs("min",a,b);
-		Double c = (a < b) ? a : b;
-      	chkresult("min",c);
-		return c;
-	}
-	
-	public Double[] min(Double[] a, Double[] b) throws Exception {
-      	chkargs("min",a,b);
-		int len = a.length;
-		Double[] c = new Double[len];
-		for (int i=0; i < len; i++) c[i] = min(a[i], b[i]);
-      	chkresult("min",c);
-		return c;
-	}
-	
-	public Double min(Double[] a) throws Exception {
-      	chkargs("min",a);
-		int len = a.length;
-		Double b = 0d;
-		for (int i=0; i < len-1; i++) b = min(a[i], a[i+1]);
-      	chkresult("min",b);
-		return b;
-	}							
-		
-	public Double ln(Double a) throws Exception 
-	{
-      	chkargs("ln",a);
-		Double b = 0.0d;
-		if (a.equals(0d)) {
-			//b =  Double.MIN_VALUE;
-			a =  Double.MIN_VALUE;	// Per guidance from survey paper, if we receive log 0, return a vewy small value.
-					// NOTE: The author must have meant to replace the input argument by a small-number, rather than the result, although this was unclearly stated.
-		}
-
-		b = Math.log(a);
-		
-      	chkresult("ln",b);
-		return b;
-	}
-	
-	public Double[] ln(Double[] a) throws Exception {
-      	chkargs("ln",a);
-		int len = a.length;
-		Double[] b = new Double[len];
-		for (int i=0; i < len; i++) b[i] = ln(a[i]);
-      	chkresult("ln",b);
-		return b;
-	}							
-	
-	public Double abs(Double a) throws Exception {
-      	chkargs("abs",a);
-		Double b = Math.abs(a);
-      	chkresult("abs",b);
-		return b;
-	}
-	
-	public Double[] abs(Double[] a) throws Exception {
-      	chkargs("abs",a);
-		int len = a.length;
-		Double[] b = new Double[len];
-		for (int i=0; i < len; i++) b[i] = abs(a[i]);
-      	chkresult("abs",b);
-		return b;
-	}								
-	
-	public Double root(Double a) throws Exception {
-      	chkargs("root",a);
-		Double b = pow(a, reciprocal1(a));
-      	chkresult("root",a);
-		return b;
-	}
-	
-	public Double[] root(Double[] a) throws Exception {
-      	chkargs("root",a);
-		int len = a.length;
-		Double[] b = new Double[len];
-		for (int i=0; i < len; i++) b[i] = root(a[i]);
-      	chkresult("root",b);
-		return b;
-	}								
-	
-	public Double square(Double a) throws Exception {
-      	chkargs("square",a);
-		Double b = a * a;	
-      	chkresult("square",b);
-		return b;
-	}
-	
-	public Double[] square(Double[] a) throws Exception {
-      	chkargs("square",a);
-		int len = a.length;
-		Double[] b = new Double[len];
-		for (int i=0; i < len; i++) b[i] = square(a[i]);
-      	chkresult("square",b);
-		return b;
-	}									
-	
-	public Double sqrt(Double a) throws Exception {
-      	chkargs("sqrt",a);
-		Double b = Math.sqrt(a);
-      	chkresult("sqrt",b);
-		return b;
-	}
-	
-	public Double[] sqrt(Double[] a) throws Exception {
-      	chkargs("sqrt",a);
-		int len = a.length;
-		Double[] b = new Double[len];
-		for (int i=0; i < len; i++) b[i] = sqrt(a[i]);
-      	chkresult("sqrt",b);
-		return b;
-	}									
-			
-	public Double reciprocal1(Double a) throws Exception {
-      	chkargs("reciprocal1",a);
-		Double b = div(1d, a);
-      	chkresult("reciprocal1",b);
-		return b;
-	}
-	
-	public Double[] reciprocal1(Double[] a) throws Exception {
-      	chkargs("reciprocal1",a);
-		int len = a.length;
-		Double[] b = new Double[len];
-		for (int i=0; i < len; i++) b[i] = reciprocal1(a[i]);
-      	chkresult("reciprocal1",b);
-		return b;
-	}
 	
 //////////////////////////////////////////////////////////////////////////////////
-// SUPPORT METHODS
+//SUPPORT METHODS
 //////////////////////////////////////////////////////////////////////////////////
-	
-  	/*
-	 *  Support method for metric implementations  
-	 *  description: 	creates an array of a specific size, all having the same value (used in calculations).
-	 *  @author 		B. Long
-	 *  version:		1.0
-	 */		      	   
-  public Double[] mkConstArray(Integer len, Double value) throws Exception 
-  {
-	  
-	  chkargs("mkConstArray", len);
-	  chkargs("mkConstArray", value);
-	  
-	  Double[] a = new Double[len];
-	  for (int i=0; i < len; i++) a[i] = value;
-    
-      chkresult("mkConstArray", a);
-      
-    return a;
-  }
-  
-  
-	/*
-	 *  Support method for metric implementations
-	 *  description: 	Converts the content of an RGB histogram to the form used by the metric algorithms.
-	 *  @author 		B. Long
-	 *  version:		1.0
-	 */	
-  
-  public Double[] rgbHistogram2Double(final RGBHistogramDescriptor d) throws Exception { 
-	  
-      	  chkargs("rgbHistogram2Double",d);
-      	  
-	      int len   	= d.getNumBins();
-	      int bands  	= d.getNumBands();
-	      Double[] r 	= new Double[len*bands];
-	      int hist[][] 	= d.getHistogram();
-	      
-	      // convert
-	      for ( int i=0; i < len; i++ ) {
-	        for (int j=0; j < bands; j++){
-	        	r[ (i*bands) + j ] = ( new Double(hist[i][j]) );
-	        }      
-	      }	      
-	      
-      	  chkresult("rgbHistogram2Double",r);
-	      return r;
-  } 
-   
-	/*
-	 *  Support method for metric implementations  
-	 *  description: 	Converts the content of a gray-scale histogram to the form used by the metric algorithms.
-	 *  @author 		B. Long
-	 *  version:		1.0
-	 */	 
+	    
 
-  public Double[] grayScaleHistogram2Double(final GrayscaleHistogramDescriptor d) throws Exception { 
-	  
-      chkargs("grayscaleHistogram2Double",d);
-      
-      int len    = d.getNumBins();
-      int hist[] = d.getHistogram();
-      Double[] r 	= new Double[len];
+/////////////////  
+//BEG
+/////////////////
 
-      for ( int i=0; i < len; i++ ) {
-    	  r[i] = ( new Double(hist[i]) );
-      }
-      
-      chkresult("grayscaleHistogram2Double",r);
-      
-      return r;
-  } 
-
-   /*
-	* Utility method
-	*	- converts a given Mesh object to Double array.
-	*
-	*/
-	public Double[] vectorizeVoxels( Mesh mesh ) {	// for .obj
-		Vector<Point> points = mesh.getVertices();
-		int len = points.size();
-		double pixel 	= 0;
-		Double[] pixels = new Double[len];
-		int pIdx 		= 0;		// pixel-index into pixels array.         
-		
-		for (int i=0; i < len; i++) 
-		{
-				pixel = points.get(i).magnitude();
-				pixels[pIdx] = pixel ;
-				pIdx++;
-		}     
-		return pixels;
-	}
-	
-	/*
-	 * Walk pixels of image and save them in 1D pixel-array of Double values.
-	 */
-	public Double[] vectorizeVoxels( ImagePlus im ) 
-	{    
-		ImageProcessor ip;
-        int w 			= im.getWidth();
-        int h 			= im.getHeight();
-        int slices		= im.getStackSize();        
-        ImageStack stk 	= im.getStack();
-        
-        double pixel 	= 0;
-        Double[] pixels = new Double[slices * h * w];
-        int pIdx 		= 0;		// pixel-index into pixels array. 
-        int x,y,z;					// coordinate-indices
-        
-        for (z=1; z<=slices; z++) 
-        {
-            ip = stk.getProcessor(z);
-            for ( y=0; y < h; y++ ) 
-            {
-                for ( x=0; x < w; x++ ) 
-                {
-                    pixel = ip.getPixel(x, y);
-                    pixels[pIdx] = pixel ;
-                    pIdx++;
-                }
-            }
-        }
-        return pixels;
-	}	
-
-	/*
-	 *  Support method for metric implementations  
-	 *  description: 	Normalizes a raw histogram to relative frequencies. (Where the histogram was received from an RGB or gray-scale histogram feature.)
-	 *  @author 		B. Long
-	 *  version:		1.0
-	 */		 
-
-
-  public Double[] normalizeHistogram(final Double[] h) throws Exception { 
-	  
-	chkargs("normalizeHistogram",h);
-        double total = 0;
-        int len = h.length;
-        for (int i=0; i < len; i++) {
-        	if ( h[i] != 0 ) {
-        		total += h[i];
-        	}
-        }
-
-      Double[] r = new Double[len];
-      for (int i=0; i < len; i++) {
-          r[i] = new Double( div(h[i], total)  );
-      }
-      
-      chkresult("normalizeHistogram",r);
-      return r;
- } 
-
-	/*
-	 *  Support method for metric implementations  
-	 *  description: 	Normalizes an RGB histogram to relative frequencies.
-	 *  @author 		B. Long
-	 *  version:		1.0
-	 */		      
-
-
-	  public Double[] normalizeRgbHistogram(final RGBHistogramDescriptor d) throws Exception { 
-		  
-	      chkargs("normalizeRgbHistogram",d);
-	      Double[] h = rgbHistogram2Double(d);
-	      h = normalizeHistogram(h);
-	      chkresult("normalizeRgbHistogram",h);
-	      return h;         
-	  }       
-
-	/*
-	 *  Support method for metric implementations  
-	 *  description: 	Normalizes a gray-scale histogram to relative frequencies.
-	 *  @author 		B. Long
-	 *  version:		1.0
-	 */		      	 
-
-	  public Double[] normalizeGrayscaleHistogram(final GrayscaleHistogramDescriptor d) throws Exception { 
-		  
-	    	chkargs("normalizeGrayscaleHistogram",d);
-	        Double[] h = grayScaleHistogram2Double(d);
-	        h = normalizeHistogram(h);
-	        chkresult("normalizeGrayscaleHistogram",h);
-	        return h;         
-	  } 
-	  
-  
-//////////////////////////////////////////////////////////////////////////////////
-// Error checks
-//////////////////////////////////////////////////////////////////////////////////
-	  
-  public boolean chkargs( String methodName, RGBHistogramDescriptor a ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  return true;	// if we get here, we've had no exceptions.
-  }	  
-
-  public boolean chkargs( String methodName, GrayscaleHistogramDescriptor a ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  return true;	// if we get here, we've had no exceptions.
-  }	    
-  
-  public boolean chkargs( String methodName, Double a, Double b ) throws Exception {
-	  if ( 	a.equals(Double.NaN) ) throw new HWIndependenceException(methodName + ": first argument NAN indeterminate value");
-	  if ( 	a.equals(Double.POSITIVE_INFINITY) ) throw new SingularityTreatmentException(methodName  + ": first argument POSITIVE_INFINITY value");
-	  if ( 	a.equals(Double.NEGATIVE_INFINITY) ) throw new SingularityTreatmentException(methodName  + ": first argument NEGATIVE_INFINITY value");
-	  if ( 	b.equals(Double.NaN) ) throw new HWIndependenceException(methodName + ": second argument NAN indeterminate value");
-	  if ( 	b.equals(Double.POSITIVE_INFINITY) ) throw new SingularityTreatmentException(methodName  + ": second argument POSITIVE_INFINITY value");
-	  if ( 	b.equals(Double.NEGATIVE_INFINITY) ) throw new SingularityTreatmentException(methodName  + ": second argument NEGATIVE_INFINITY value");
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  if ( 	b == null ) throw new SingularityTreatmentException(methodName  + ": second argument null value");
-	  return true;	// if we get here, we've had no exceptions.
-  }
-  
-  // NOTE: This check for an int arg assumes a non-negative integer
-  public boolean chkargs( String methodName, int a ) throws Exception {
-	  if ( 	a < 0 ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  return true;	// if we get here, we've had no exceptions.
-  }  
-  
-  public boolean chkargs( String methodName, Integer a ) throws Exception {
-	  if ( 	a < 0 ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  return true;	// if we get here, we've had no exceptions.
-  }  
-      
-  public boolean chkargs( String methodName, Double a ) throws Exception {
-	  if ( 	a.equals(Double.NaN) ) throw new HWIndependenceException(methodName  + ": first argument NAN indeterminate value");
-	  if ( 	a.equals(Double.POSITIVE_INFINITY) ) throw new SingularityTreatmentException(methodName  + ": first argument POSITIVE_INFINITY value");
-	  if ( 	a.equals(Double.NEGATIVE_INFINITY) ) throw new SingularityTreatmentException(methodName  + ": first argument NEGATIVE_INFINITY value");
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  return true;	// if we get here, we've had no exceptions.
-  }
-  
-  public boolean chkargs( String methodName, Double[] a ) throws Exception {
+public boolean chkargs( String methodName, double[] a ) throws Exception {
 	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
 	  
 	  int len = a.length;
@@ -3146,170 +3400,35 @@ public class MathOpsE
 		  chkargs(methodName, a[i]);
 	  }	  
 	  return true;	// if we get here, we've had no exceptions.
-  }
-  
-  public boolean chkargs( String methodName, double[] a ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  
-	  int len = a.length;
-	  for (int i=0; i < len; i++) {
-		  chkargs(methodName, a[i]);
-	  }	  
-	  return true;	// if we get here, we've had no exceptions.
-  }
-  
-  public boolean chkargs( String methodName, Integer[] a ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  
-	  int len = a.length;
-	  for (int i=0; i < len; i++) {
-		  chkargs(methodName, a[i]);
-	  }	  
-	  return true;	// if we get here, we've had no exceptions.
-  }
-  
-  public boolean chkargs( String methodName, Double[][] a ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  
-	  int len = a.length;
-	  for (int i=0; i < len; i++) {
-		  chkargs(methodName, a[i]);
-	  }	  
-	  return true;	// if we get here, we've had no exceptions.
-  }
-  
-  public boolean chkargs( String methodName, double[][] a ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  
-	  int len = a.length;
-	  for (int i=0; i < len; i++) {
-		  chkargs(methodName, a[i]);
-	  }	  
-	  return true;	// if we get here, we've had no exceptions.
-  }  
-  
-  public boolean chkargs( String methodName, Integer[][] a ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  
-	  int len = a.length;
-	  for (int i=0; i < len; i++) {
-		  chkargs(methodName, a[i]);
-	  }	  
-	  return true;	// if we get here, we've had no exceptions.
-  }
-  
-  public boolean chkargs( String methodName, Double[][][] a ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  
-	  int len = a.length;
-	  for (int i=0; i < len; i++) {
-		  chkargs(methodName, a[i]);
-	  }	  
-	  return true;	// if we get here, we've had no exceptions.
-  } 
-  
-  public boolean chkargs( String methodName, Integer[][][] a ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  
-	  int len = a.length;
-	  for (int i=0; i < len; i++) {
-		  chkargs(methodName, a[i]);
-	  }	  
-	  return true;	// if we get here, we've had no exceptions.
-  }  
-    
-  public boolean chkargs( String methodName, Double[] a, Double[] b ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  if ( 	b == null ) throw new SingularityTreatmentException(methodName  + ": second argument null value");
-	  chkargs(methodName,a);
-	  chkargs(methodName,b);
-	  return true;	// if we get here, we've had no exceptions.
-  }
+}
 
-  public boolean chkargs( String methodName, Integer[] a, Integer[] b ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  if ( 	b == null ) throw new SingularityTreatmentException(methodName  + ": second argument null value");
-	  chkargs(methodName,a);
-	  chkargs(methodName,b);
-	  return true;	// if we get here, we've had no exceptions.
-  }  
-  
-  public boolean chkargs( String methodName, Double[][] a, Double[][] b ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  if ( 	b == null ) throw new SingularityTreatmentException(methodName  + ": second argument null value");
-	  chkargs(methodName,a);
-	  chkargs(methodName,b);
-	  return true;	// if we get here, we've had no exceptions.
-  }
-  
-  public boolean chkargs( String methodName, Integer[][] a, Integer[][] b ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  if ( 	b == null ) throw new SingularityTreatmentException(methodName  + ": second argument null value");
-	  chkargs(methodName,a);
-	  chkargs(methodName,b);
-	  return true;	// if we get here, we've had no exceptions.
-  }  
- 
-  public boolean chkargs( String methodName, Double[][][] a, Double[][][] b ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  if ( 	b == null ) throw new SingularityTreatmentException(methodName  + ": second argument null value");
-	  chkargs(methodName,a);
-	  chkargs(methodName,b);
-	  return true;	// if we get here, we've had no exceptions.
-  }  
-  
-  public boolean chkargs( String methodName, Integer[][][] a, Integer[][][] b ) throws Exception {
-	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
-	  if ( 	b == null ) throw new SingularityTreatmentException(methodName  + ": second argument null value");
-	  chkargs(methodName,a);
-	  chkargs(methodName,b);
-	  return true;	// if we get here, we've had no exceptions.
-  }    
-    
-   
-  public boolean chkresult( String methodName, Double a ) throws Exception {
-	return chkargs(methodName,a);  
-  }
-  
-  public boolean chkresult( String methodName, double a ) throws Exception {
-	return chkargs(methodName,a);  
-  }    
-	
-  public boolean chkresult( String methodName, Double[] a ) throws Exception {
-	return chkargs(methodName,a);  
-  }
-  
-  public boolean chkresult( String methodName, double[] a ) throws Exception {
-	return chkargs(methodName,a);  
-  }
-  
-  public boolean chkresult( String methodName, Double[][] a ) throws Exception {
-	return chkargs(methodName,a);  
-  }  
 
-  public boolean chkresult( String methodName, Double[][][] a ) throws Exception {
-	return chkargs(methodName,a);  
-  }   
-  
-  public boolean chkresult( String methodName, Integer a ) throws Exception {
-	return chkargs(methodName,a);  
-  }  
-	
-  public boolean chkresult( String methodName, Integer[] a ) throws Exception {
-	return chkargs(methodName,a);  
-  }
-  
-  public boolean chkresult( String methodName, Integer[][] a ) throws Exception {
-	return chkargs(methodName,a);  
-  }  
+public boolean chkargs( String methodName, double[][] a ) throws Exception {
+	  if ( 	a == null ) throw new SingularityTreatmentException(methodName  + ": first argument null value");
+	  
+	  int len = a.length;
+	  for (int i=0; i < len; i++) {
+		  chkargs(methodName, a[i]);
+	  }	  
+	  return true;	// if we get here, we've had no exceptions.
+}  
 
-  public boolean chkresult( String methodName, Integer[][][] a ) throws Exception {
+
+public boolean chkresult( String methodName, double a ) throws Exception {
 	return chkargs(methodName,a);  
-  }   
+}    
+
+public boolean chkresult( String methodName, double[] a ) throws Exception {
+	return chkargs(methodName,a);  
+}
+
   
+
+//END
+
 
 /////////////////////////////////
-// ImageOps auxilliary methods
+//ImageOps auxilliary methods
 /////////////////////////////////
 
 	public Double and( Double a, Double b ) throws Exception {
@@ -3600,8 +3719,8 @@ public class MathOpsE
 	}
 
 	/*
-         * Given an input list of items, sort it and remove duplicates.
-         */
+       * Given an input list of items, sort it and remove duplicates.
+       */
 
 	public Double[] uniqueSort( Double[] list ) throws Exception {
 		chkargs("uniqueSort",list);
@@ -3633,7 +3752,7 @@ public class MathOpsE
 	 * example:
 	 *  im_nonZeroEntries = mask(origImg, imgMask);
 	 *  im_unsortedPixelValueList = uniquePixelValues(img);
- 	 */
+	 */
 
 	public Double[] uniquePixelValues( Double[] img ) throws Exception {
 		chkargs("uniquePixelValues",img);
@@ -3667,22 +3786,22 @@ public class MathOpsE
 	}
 
 	/* Get a list of values (often a vectorized sequance of non-zero entries from an image matrix)
-	 * return a binary list and 0-entries where the given value is found in the list and
+	 * return a binary list and 1-entries where the given value is found in the list and
 	 * 0-entries are found everywhere else.
-         */
+       */
 
 	public Double[] getMatches( Double[] originalContent, Double value ) throws Exception {
 		chkargs("getMatches",originalContent);
 		chkargs("getMatches",value);
-		ArrayList r = new ArrayList();
-		Double val = value.doubleValue();
 		Double k   = 0.0;
 		int len = originalContent.length;
 		Double[] B = new Double[len];
 
 		for (int i=0; i < len; i++) {
-			if ( k.equals( val ) )
-				B[i] = 1.0d;
+			k = originalContent[i];	// BJL FIX - missing stmt caused getMatches to not show matches as expected.
+			if ( k.equals( value ) )			
+			//if ( k == value  )
+				B[i] = 1.0d;			// NOTE: If match, then 1, else 0.
 			else
 				B[i] = 0.0d;
 		}
@@ -3692,9 +3811,9 @@ public class MathOpsE
 	}
 
 	/* 
-         * Returns the content of a given matrix's column
-         *
-         */
+       * Returns the content of a given matrix's column
+       *
+       */
 
 	public Double[] getColumn(Double[][] M, Integer rows, Integer col ) throws Exception {
 		chkargs("getColumn",M);
@@ -3711,8 +3830,8 @@ public class MathOpsE
 	}
 
 	/* 
-         * Returns content of a given matrix's row.
- 	 */
+       * Returns content of a given matrix's row.
+	 */
 
 	public Double[] getRow(Double M [][], Integer cols, Integer row ) throws Exception {
 		chkargs("getRow",M);
@@ -3729,7 +3848,7 @@ public class MathOpsE
 	}
 
 	/*
- 	 *  Computes n-choose-2.
+	 *  Computes n-choose-2.
 	 */
 
 	public Double nChoose2( Double n ) throws Exception {
@@ -3747,7 +3866,7 @@ public class MathOpsE
 	}
 	
 	/* 
-     * Create a 2D zero matrix.
+   * Create a 2D zero matrix.
 	 */
 
 	public Double[][] makeZeroMatrix2D( Integer rows, Integer cols, Double value )  throws Exception {
