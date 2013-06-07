@@ -1,0 +1,4 @@
+gov.nist.itl.versus.similarity3d.comparisons.measure.impl.AdjustedRandIndexMeasure
+gov.nist.itl.versus.similarity3d.comparisons.measure.impl.RandIndexMeasure
+gov.nist.itl.versus.similarity3d.comparisons.measure.impl.TotalErrorRateEvaluationMeasure
+gov.nist.itl.versus.similarity3d.comparisons.measure.impl.TotalErrorRateTestMeasure
