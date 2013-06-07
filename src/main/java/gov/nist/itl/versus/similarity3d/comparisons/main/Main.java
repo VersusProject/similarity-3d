@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import core.io.IO;
+import gov.nist.itl.versus.similarity3d.comparisons.main.IO;
 import gov.nist.itl.versus.similarity3d.comparisons.main.Sys;
 import edu.illinois.ncsa.versus.adapter.Adapter;
 import edu.illinois.ncsa.versus.adapter.FileLoader;
